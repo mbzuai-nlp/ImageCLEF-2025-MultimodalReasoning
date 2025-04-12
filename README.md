@@ -12,12 +12,51 @@ Given an image of a multiple-choice question (MCQ), the task is to:
 - Understand any relevant visual content (e.g., graphs, tables).
 - Predict the correct answer **only based on the provided image or caption**.
 
-Each sample consists of:
+---
 
-- `id`: Unique image ID
-- `image`: Corresponding PNG image file
-- `answer_key`: Ground truth label (e.g., "A")
-- `language`: Image language metadata
+## Prediction format
+
+The submission file **MUST** have the following format:
+
+- `id`: Unique Identifier (matching to a sample from the Test set). 
+- `answer_key`: Ground truth label (one of "A", "B", "C", "D", or "E")
+- `language`: Question language  
+
+Additional formatting rules:
+- Submission **MUST** be the same size as the Test set. *For single-language submissions, we expect the size to match the respective test data for that language.*
+- Submission **MUST NOT** contain duplicates (There will be an evaluation Error!)
+- `answer_key` must be **EXACTLY ONE** of "A", "B", "C", "D", or "E". 
+
+Correct submission file example:
+
+```
+[
+  {
+      "id": "5e9sf6b9-3338-4e97-ba6b-762e24a07e69",
+      "answer_key": "A",
+      "language": "English"
+  },
+  {
+      "id": "08fjguy8-4e97-12s4-bt65-385f09dsk5df",
+      "answer_key": "C",
+      "language": "English"
+  },
+  ...
+]
+
+```
+
+## Evaluation
+
+The evaluation metric for the task is **accuracy**: *correct* / *total_questions*.
+
+We provide an evaluation script, that you can use locally, located in `evaluation/evaluate.py`. 
+
+*Example usage:*
+
+```
+python evaluate.py --pred_file="./pred.json" --gold_file="./gold.json" --print_score="True"
+```
 
 ---
 
@@ -167,7 +206,7 @@ ImageCLEF-2025-MultimodalReasoning/
 │   ├── Llama-3.2-11B-Vision/   # Precomputed captions for olmo.py
 │   └── SmolVLM/                # Precomputed captions for smollm.py
 ├── data/
-│   ├── images/                 # MCQ images (.png)
+│   ├── images/                 # MCQ images (.png) 
 │   └── metadata_labeled.json  # Ground truth JSON
 ├── models/                    # Downloaded model folders
 ├── logs/                      # All log and result outputs
@@ -231,7 +270,7 @@ Each evaluation script produces a JSON file:
 [
   {
     "id": "image_001",
-    "language": "en",
+    "language": "English",
     "answer_key": "C"
   },
   ...
