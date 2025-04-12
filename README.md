@@ -121,7 +121,7 @@ To query a Vision-Language Model (VLM) with an image, follow these steps:
 These models use precomputed captions as input. Examples include `olmo.py` and `smollm.py`.
 **Prompt 1**:
 
-> You are given a multiple-choice question extracted from an exam. The question is: {caption} Identify the question and all answer options (even if there are more than four), and any relevant data related to graphs or tables. Choose the correct answer and reply with just the letter of the correct option, no explanation.
+> You are given a multiple-choice question extracted from an exam. The question is: `{caption}` Identify the question and all answer options (even if there are more than four), and any relevant data related to graphs or tables. Choose the correct answer and reply with just the letter of the correct option, no explanation.
 
 **Prompt 2**:
 
