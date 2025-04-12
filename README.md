@@ -33,13 +33,11 @@ Use the image directly for reasoning in a zero-shot setting.
 
 - Model path: `models/molmo`
 - Script: `baselines/molmo.py`
-- Prompt: direct prompt + image
 
 #### 2. `smolvlm.py`
 
 - Model path: `models/smolvlm`
 - Script: `baselines/smolvlm.py`
-- Prompt: Same as above
 
 ### Large Language Models with Captions (LLM)
 
@@ -47,7 +45,7 @@ Use precomputed image captions for reasoning.
 
 #### 3. `olmo.py`
 
-- Model path: `models/olmo2-1124-7b-instruct`
+- Model path: `models/olmo`
 - Captions: `captions/Llama-3.2-11B-Vision/` or `captions/SmolVLM/`
 - Script: `baselines/olmo.py`
 
@@ -56,9 +54,98 @@ Use precomputed image captions for reasoning.
 - Model path: `models/smollm`
 - Captions: `captions/Llama-3.2-11B-Vision/` or `captions/SmolVLM/`
 - Script: `baselines/smollm.py`
-- Server port: `8018`
 
 All models are evaluated in a **zero-shot** setting with no fine-tuning.
+
+---
+
+## Prompts
+
+Each baseline uses a specific zero-shot prompt to guide reasoning:
+
+- **Prompt 1**: A short, direct instruction for selecting the correct answer based on image or caption content only.
+- **Prompt 2**: A step-by-step reasoning prompt encouraging deeper analysis of textual and visual cues (including multilingual content).
+
+### Vision-Language Models (VLM)
+
+These models use the image as input. Examples include `molmo.py` and `smolvlm.py`.
+
+**Prompt 1**:
+
+> Analyze the image of a multiple-choice question. Identify the question, all answer options (even if there are more than four), and any relevant visuals like graphs or tables. Choose the correct answer based only on the image. Reply with just the letter of the correct option, no explanation.
+
+**Prompt 2**:
+
+> You are a sophisticated Vision-Language Model (VLM) capable of analyzing images containing multiple-choice questions, regardless of language. To guide your analysis, you may adopt the following process:
+>
+> 1. Examine the image carefully for all textual and visual information.
+> 2. Identify the question text, even if it's in a different language.
+> 3. Extract all answer options (note: there may be more than four).
+> 4. Look for additional visual elements such as tables, diagrams, charts, or graphs.
+> 5. Ensure to consider any multilingual content present in the image.
+> 6. Analyze the complete context and data provided.
+> 7. Select the correct answer(s) based solely on your analysis.
+> 8. Respond by outputting only the corresponding letter(s) without any extra explanation.
+
+To query a Vision-Language Model (VLM) with an image, follow these steps:
+
+1. **Convert the image to base64 format**:
+
+   - Open the image file (e.g., `.png`) in binary mode.
+   - Encode the binary data using `base64.b64encode(...)`.
+   - Prefix the encoded string with `data:image/png;base64,` to make it web-compatible.
+
+2. **Format the input as an OpenAI-compatible chat message**:
+
+```python
+{
+  "role": "user",
+  "content": [
+    {
+      "type": "text",
+      "text": "<insert_prompt_text_here (prompt1 or prompt 2)>"
+    },
+    {
+      "type": "image_url",
+      "image_url": {
+        "url": "data:image/png;base64,<base64_encoded_image>"
+      }
+    }
+  ]
+}
+
+```
+
+### Language-Only Models (LLM)
+
+These models use precomputed captions as input. Examples include `olmo.py` and `smollm.py`.
+**Prompt 1**:
+
+> You are given a multiple-choice question extracted from an exam. The question is: {caption} Identify the question and all answer options (even if there are more than four), and any relevant data related to graphs or tables. Choose the correct answer and reply with just the letter of the correct option, no explanation.
+
+**Prompt 2**:
+
+> You are given a multiple-choice question extracted from an exam.  
+> The question is: `{caption}`  
+> Please follow the steps below to determine the correct answer:
+>
+> 1. Carefully read and interpret the full question text.
+> 2. Identify the main question, even if it is in a different language.
+> 3. Extract all available answer options (note: there may be more than four).
+> 4. Pay attention to any references to data, including tables, diagrams, charts, or graphs mentioned in the text.
+> 5. Take into account any multilingual elements present in the question.
+> 6. Analyze all information in context, both textual and inferred data.
+> 7. Select the correct answer based solely on your analysis.
+> 8. Respond by outputting only the letter(s) of the correct answer option, with no additional explanation.
+
+**Format the input as an OpenAI-compatible chat message**:
+
+```python
+{
+  "role": "user",
+  "content": prompt_text
+}
+```
 
 ---
 
