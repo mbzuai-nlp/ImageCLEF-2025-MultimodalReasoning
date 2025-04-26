@@ -18,14 +18,15 @@ Given an image of a multiple-choice question (MCQ), the task is to:
 
 The submission file **MUST** have the following format:
 
-- `id`: Unique Identifier (matching to a sample from the Test set). 
+- `id`: Unique Identifier (matching to a sample from the Test set).
 - `answer_key`: Ground truth label (one of "A", "B", "C", "D", or "E")
-- `language`: Question language  
+- `language`: Question language
 
 Additional formatting rules:
-- Submission **MUST** be the same size as the Test set. *For single-language submissions, we expect the size to match the respective test data for that language.*
+
+- Submission **MUST** be the same size as the Test set. _For single-language submissions, we expect the size to match the respective test data for that language._
 - Submission **MUST NOT** contain duplicates (There will be an evaluation Error!)
-- `answer_key` must be **EXACTLY ONE** of "A", "B", "C", "D", or "E". 
+- `answer_key` must be **EXACTLY ONE** of "A", "B", "C", "D", or "E".
 
 Correct submission file example:
 
@@ -48,11 +49,11 @@ Correct submission file example:
 
 ## Evaluation
 
-The evaluation metric for the task is **accuracy**: *correct* / *total_questions*.
+The evaluation metric for the task is **accuracy**: _correct_ / _total_questions_.
 
-We provide an evaluation script, that you can use locally, located in `evaluation/evaluate.py`. 
+We provide an evaluation script, that you can use locally, located in `evaluation/evaluate.py`.
 
-*Example usage:*
+_Example usage:_
 
 ```
 python evaluate.py --pred_file="./pred.json" --gold_file="./gold.json" --print_score="True"
@@ -206,8 +207,8 @@ ImageCLEF-2025-MultimodalReasoning/
 │   ├── Llama-3.2-11B-Vision/   # Precomputed captions for olmo.py
 │   └── SmolVLM/                # Precomputed captions for smollm.py
 ├── data/
-│   ├── images/                 # MCQ images (.png) 
-│   └── metadata_labeled.json  # Ground truth JSON
+│   ├── images/                 # MCQ images (.png)
+│   └── validation_data.json  # Ground truth JSON
 ├── models/                    # Downloaded model folders
 ├── logs/                      # All log and result outputs
 └── run.sh                     # Entry point for selected baseline

@@ -104,7 +104,7 @@ def evaluate(dataset_path, model_name):
 
 
 if __name__ == "__main__":
-    dataset_path = "../data/metadata_labeled.json"
+    dataset_path = "../data/validation_data.json"
     model_name = "../models/smollm"
 
     print("Running SmolLM2")

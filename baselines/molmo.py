@@ -73,11 +73,9 @@ def evaluate(dataset_path, image_folder):
         prediction = process_image_chat_vllm(image_path)
         is_correct = prediction == answer_key
 
-        results.append({
-            "id": image_id,
-            "language": item["language"],
-            "answer_key": prediction
-        })
+        results.append(
+            {"id": image_id, "language": item["language"], "answer_key": prediction}
+        )
 
         correct += is_correct
         total += 1
@@ -94,6 +92,6 @@ def evaluate(dataset_path, image_folder):
 
 
 if __name__ == "__main__":
-    dataset_path = "data/metadata_labeled.json"
+    dataset_path = "data/validation_data.json"
     image_folder = "data/images"
     evaluate(dataset_path, image_folder)

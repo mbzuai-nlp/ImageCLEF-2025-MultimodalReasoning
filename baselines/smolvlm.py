@@ -101,6 +101,6 @@ def evaluate(dataset_path, image_folder):
 
 
 if __name__ == "__main__":
-    dataset_path = "data/metadata_labeled.json"
+    dataset_path = "data/validation_data.json"
     image_folder = "data/images"
     evaluate(dataset_path, image_folder)
