@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ImageCLEF 2026 MultimodalReasoning</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 antialiased relative">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 bg-white/90 backdrop-blur-sm border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0 flex items-center">
+                    <span class="font-bold text-xl text-brand-700 tracking-tight">ImageCLEF 2026</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#about"
+                        class="text-slate-600 hover:text-brand-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">About</a>
+                    <a href="#news"
+                        class="text-slate-600 hover:text-brand-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">News</a>
+                    <a href="#tasks"
+                        class="text-slate-600 hover:text-brand-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Tasks</a>
+                    <a href="#resources"
+                        class="text-slate-600 hover:text-brand-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Resources</a>
+                    <a href="#guidelines"
+                        class="text-slate-600 hover:text-brand-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">Guidelines</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="about" class="pt-32 pb-20 bg-gradient-to-br from-slate-900 to-brand-900 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="lg:w-5/6">
+                <h1 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">ImageCLEF 2026 <br /> <span
+                        class="text-brand-300">MultimodalReasoning</span></h1>
+                <p class="text-lg md:text-xl text-slate-300 mb-8 leading-relaxed">
+                    Building on the success of previous iterations, the 2026 edition shifts focus toward a <span
+                        class="text-white font-medium">updated high-quality dataset from 2025 academic questions</span>
+                    and <span class="text-white font-medium">fully transparent open-source development</span>.
+                    <br><br> Evaluate the next generation of frontier multimodal models on challenging vision-based exam
+                    problems.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white/5 p-6 rounded-xl border border-white/10">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="p-2 bg-brand-500/20 rounded-lg">
+                                <i data-lucide="database" class="w-6 h-6 text-brand-300"></i>
+                            </div>
+                            <h3 class="font-semibold text-lg">High-Quality Datasets</h3>
+                        </div>
+                        <p class="text-slate-400 text-sm">Updated reasoning-intensive data from 2025 academic questions,
+                            focusing on diagrams, charts, and technical schematics.</p>
+                    </div>
+                    <div class="bg-white/5 p-6 rounded-xl border border-white/10">
+                        <div class="flex items-center gap-3 mb-3">
+                            <div class="p-2 bg-purple-500/20 rounded-lg">
+                                <i data-lucide="cpu" class="w-6 h-6 text-purple-300"></i>
+                            </div>
+                            <h3 class="font-semibold text-lg">Open-Source Solutions</h3>
+                        </div>
+                        <p class="text-slate-400 text-sm">Promoting transparency with fully open-source architectures
+                            and reproducible systems.</p>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-4 mt-12 ">
+                    <a href="#tasks"
+                        class="bg-brand-500 hover:bg-brand-600 text-white px-6 py-3 rounded-lg font-semibold transition-all shadow-lg shadow-brand-500/30 flex items-center gap-2">
+                        View Tasks <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- News & Dates -->
+    <section id="news" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                <!-- News -->
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900 mb-8 flex items-center gap-2">
+                        <i data-lucide="newspaper" class="w-6 h-6 text-brand-600"></i> Latest News
+                    </h2>
+                    <div class="space-y-6">
+                        <div class="flex gap-4 items-start p-4 bg-slate-50 rounded-lg border border-slate-100">
+                            <div class="text-sm font-bold text-slate-500 whitespace-nowrap">Jan 20, 2026</div>
+                            <div>
+                                <h4 class="font-semibold text-slate-800">Competition Information Release</h4>
+                                <p class="text-sm text-slate-600 mt-1">Official announcement and website launch for the
+                                    2026 edition.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dates -->
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900 mb-8 flex items-center gap-2">
+                        <i data-lucide="calendar" class="w-6 h-6 text-brand-600"></i> Important Dates
+                    </h2>
+                    <div class="relative pl-8 border-l-2 border-slate-200 space-y-8">
+                        <div class="relative">
+                            <div
+                                class="absolute -left-[41px] bg-brand-500 h-5 w-5 rounded-full border-4 border-white shadow-sm">
+                            </div>
+                            <h4 class="font-bold text-slate-900">20 Dec 2025</h4>
+                            <p class="text-slate-600">Registration opens for all ImageCLEF tasks</p>
+                        </div>
+                        <div class="relative">
+                            <div class="absolute -left-[41px] bg-white border-2 border-slate-300 h-5 w-5 rounded-full">
+                            </div>
+                            <h4 class="font-bold text-slate-900">12 Apr 2026</h4>
+                            <p class="text-slate-600">Test data release</p>
+                        </div>
+                        <div class="relative">
+                            <div class="absolute -left-[41px] bg-white border-2 border-slate-300 h-5 w-5 rounded-full">
+                            </div>
+                            <h4 class="font-bold text-slate-900">25 Apr 2026</h4>
+                            <p class="text-slate-600">Registration closes</p>
+                        </div>
+                        <div class="mt-4 text-xs text-slate-400 italic">
+                            All dates follow 00:00 Anywhere on Earth (AoE).
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Task Definitions -->
+    <section id="tasks" class="py-20 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-slate-900">Competition Tasks</h2>
+                <p class="text-lg text-slate-600 mt-2">The competition tasks are designed to evaluate the performance
+                    of multimodal models on challenging vision-based exam problems.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Task 1 -->
+                <div
+                    class="bg-white rounded-xl shadow-sm border border-slate-100 p-8 hover:shadow-md transition-shadow">
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-6">
+                        <span class="text-2xl font-bold text-blue-600">1</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-4">Multiple-Choice Question Answering (MCQ)</h3>
+                    <p class="text-slate-600 leading-relaxed mb-6">
+                        Given an image of a question with three to five possible answer options, the solution
+                        must select the single correct answer.
+                    </p>
+                    <div class="h-px bg-slate-100 my-4"></div>
+                    <span
+                        class="inline-flex items-center text-xs font-medium text-blue-700 bg-blue-50 px-2.5 py-1 rounded-full">
+                        Classification
+                    </span>
+                </div>
+
+                <!-- Task 2 -->
+                <div
+                    class="bg-white rounded-xl shadow-sm border border-slate-100 p-8 hover:shadow-md transition-shadow">
+                    <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-6">
+                        <span class="text-2xl font-bold text-indigo-600">2</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-4">Open Question Answering (OpenQA)</h3>
+                    <p class="text-slate-600 leading-relaxed mb-6">
+                        Given an image of a question without predefined answer options, the solution must generate a
+                        free-form textual answer.
+                    </p>
+                    <div class="h-px bg-slate-100 my-4"></div>
+                    <span
+                        class="inline-flex items-center text-xs font-medium text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-full">
+                        Generative
+                    </span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Data & Resources -->
+    <section id="resources" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-slate-900 mb-12">Data & Resources</h2>
+            <div class="bg-slate-900 rounded-2xl overflow-hidden shadow-xl">
+                <div class="p-10">
+                    <h3 class="text-2xl font-bold text-white mb-6">Start Building</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <a href="#"
+                            class="block bg-white/5 hover:bg-white/10 p-4 rounded-xl transition-colors border border-white/10 group">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <div class="text-white font-semibold mb-1 group-hover:text-brand-100">
+                                        Training & Validation Data</div>
+                                    <div class="text-slate-400 text-sm">MBZUAI/EXAMS-V dataset</div>
+                                </div>
+                                <i data-lucide="external-link"
+                                    class="text-slate-500 group-hover:text-white transition-colors"></i>
+                            </div>
+                        </a>
+                        <a href="https://github.com/mbzuai-nlp/ImageCLEF-2025-MultimodalReasoning"
+                            class="block bg-white/5 hover:bg-white/10 p-4 rounded-xl transition-colors border border-white/10 group">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <div class="text-white font-semibold mb-1 group-hover:text-brand-100">
+                                        Participant's Starter Kit</div>
+                                    <div class="text-slate-400 text-sm">Guidelines, baselines, and evaluation code
+                                    </div>
+                                </div>
+                                <i data-lucide="github"
+                                    class="text-slate-500 group-hover:text-white transition-colors"></i>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Guidelines -->
+    <section id="guidelines" class="py-20 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-slate-900 mb-12">Competition Guidelines</h2>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+
+                <!-- VM Constraints -->
+                <div
+                    class="bg-white p-8 rounded-xl border border-slate-200 transform hover:-translate-y-1 transition-transform duration-300">
+                    <h3 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+                        <i data-lucide="server" class="text-brand-600"></i> VM Environment
+                    </h3>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div class="p-3 bg-slate-50 rounded-lg">
+                            <div class="text-xs text-slate-500 uppercase tracking-wider font-semibold">GPU</div>
+                            <div class="font-mono text-slate-900 text-sm">A40 (40GB)</div>
+                        </div>
+                        <div class="p-3 bg-slate-50 rounded-lg">
+                            <div class="text-xs text-slate-500 uppercase tracking-wider font-semibold">Command</div>
+                            <div class="font-mono text-slate-900 text-sm">bash inference.sh</div>
+                        </div>
+                    </div>
+                    <p class="mt-4 text-sm text-slate-500">
+                        Submissions must be reproducible and run within these constraints for the private test set
+                        evaluation.
+                    </p>
+                </div>
+                <!-- Submission Categories -->
+                <div
+                    class="p-8 bg-white rounded-xl border border-slate-200 transform hover:-translate-y-1 transition-transform duration-300">
+                    <h3 class="text-xl font-bold mb-4 flex items-center gap-2">
+                        <i data-lucide="layers" class="text-brand-600"></i> Categories
+                    </h3>
+                    <p class="text-sm text-slate-500 mb-6">
+                        To promote and encourage efficient solutions, the competition has two categories:
+                    </p>
+                    <ul class="space-y-6">
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="zap" class="w-6 h-6 text-brand-600 mt-0.5"></i>
+                            <div>
+                                <strong class="block text-lg">Tiny</strong>
+                                <span class="text-sm text-slate-500">Models ≤ 7B parameters.</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i data-lucide="brain-circuit" class="w-6 h-6 text-brand-600 mt-0.5"></i>
+                            <div>
+                                <strong class="block text-lg">Normal</strong>
+                                <span class="text-sm text-slate-500">Models ≥ 8B parameters.</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <!-- Data Rules -->
+                <div
+                    class="bg-white p-8 rounded-xl border border-slate-200 transform hover:-translate-y-1 transition-transform duration-300">
+                    <h3 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+                        <i data-lucide="file-text" class="text-brand-600"></i> Rules & Constraints
+                    </h3>
+                    <ul class="space-y-3 text-slate-600">
+                        <li class="flex gap-2">
+                            <span class="text-green-500 font-bold">✓</span>
+                            <span>Open-weights/source models only.</span>
+                        </li>
+                        <li class="flex gap-2">
+                            <span class="text-green-500 font-bold">✓</span>
+                            <span>Pre-trained VLM models allowed.</span>
+                        </li>
+                        <li class="flex gap-2">
+                            <span class="text-green-500 font-bold">✓</span>
+                            <span>External data allowed (must be disclosed).</span>
+                        </li>
+                        <li class="flex gap-2">
+                            <span class="text-red-500 font-bold">✕</span>
+                            <span>Proprietary models (e.g. GPT-4 API) NOT allowed.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="bg-white p-8 rounded-xl border border-slate-200">
+                <h3 class="text-xl font-bold text-slate-900 mb-6">Evaluation & Submission</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
+                    <div>
+                        <h4 class="font-bold text-slate-800 mb-2">Leaderboard Phase</h4>
+                        <p class="text-slate-600 text-sm mb-4">Submit JSON predictions only.</p>
+                        <code class="block bg-slate-900 text-slate-100 p-3 rounded text-sm font-mono">
+                            [{ "question_id": "...", "predicted_answer": "..." }]
+                        </code>
+                        <p class="text-xs text-slate-500 mt-2">Max 20 submissions/day, 200 total.</p>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-800 mb-2">Final Evaluation</h4>
+                        <ul class="text-sm text-slate-600 list-disc list-inside space-y-1">
+                            <li>Public GitHub repository</li>
+                            <li>Model weights</li>
+                            <li>Training dataset (optional)</li>
+                            <li>Execution command</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Organizers -->
+    <section class="py-20 bg-white border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-slate-900 mb-12">Organizers</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Co-Leads -->
+                <div class="flex items-center gap-4">
+                    <img src="assets/di-dimitrov.png" alt="Dimitar Dimitrov"
+                        class="w-16 h-16 rounded-full border-2 border-slate-100 shadow-sm">
+                    <div class="space-y-0.5">
+                        <h4 class="font-bold text-slate-900 leading-tight">Dimitar Dimitrov*</h4>
+                        <p class="text-xs text-slate-500 leading-tight">Sofia University "St. Kliment Ohridski",
+                            Bulgaria</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <img src="assets/mominaahsan.png" alt="Momina Ahsan"
+                        class="w-16 h-16 rounded-full border-2 border-slate-100 shadow-sm">
+                    <div class="space-y-0.5">
+                        <h4 class="font-bold text-slate-900 leading-tight">Momina Ahsan*</h4>
+                        <p class="text-xs text-slate-500 leading-tight">MBZUAI, UAE</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <img src="assets/mingshanhee.png" alt="Ming Shan Hee"
+                        class="w-16 h-16 rounded-full border-2 border-slate-100 shadow-sm">
+                    <div class="space-y-0.5">
+                        <h4 class="font-bold text-slate-900 leading-tight">Ming Shan Hee*</h4>
+                        <p class="text-xs text-slate-500 leading-tight">MBZUAI, UAE</p>
+                    </div>
+                </div>
+                <!-- Others -->
+                <div class="flex items-center gap-4">
+                    <img src="assets/SarfrazAhmad307.png" alt="Sarfraz Ahmad"
+                        class="w-16 h-16 rounded-full border-2 border-slate-100 shadow-sm">
+                    <div class="space-y-0.5">
+                        <h4 class="font-bold text-slate-900 leading-tight">Sarfraz Ahmad</h4>
+                        <p class="text-xs text-slate-500 leading-tight">MBZUAI, UAE</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <img src="assets/didizlatkova.png" alt="Dimitrina Zlatkova"
+                        class="w-16 h-16 rounded-full border-2 border-slate-100 shadow-sm">
+                    <div class="space-y-0.5">
+                        <h4 class="font-bold text-slate-900 leading-tight">Dimitrina Zlatkova</h4>
+                        <p class="text-xs text-slate-500 leading-tight">Sofia University "St. Kliment Ohridski",
+                            Bulgaria</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <img src="assets/GeorgiPachov.png" alt="Georgi Pachov"
+                        class="w-16 h-16 rounded-full border-2 border-slate-100 shadow-sm">
+                    <div class="space-y-0.5">
+                        <h4 class="font-bold text-slate-900 leading-tight">Georgi Pachov</h4>
+                        <p class="text-xs text-slate-500 leading-tight">Sofia University "St. Kliment Ohridski",
+                            Bulgaria</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <img src="assets/ikoychev.png" alt="Ivan Koychev"
+                        class="w-16 h-16 rounded-full border-2 border-slate-100 shadow-sm">
+                    <div class="space-y-0.5">
+                        <h4 class="font-bold text-slate-900 leading-tight">Ivan Koychev</h4>
+                        <p class="text-xs text-slate-500 leading-tight">Sofia University "St. Kliment Ohridski",
+                            Bulgaria</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <img src="assets/preslav.png" alt="Preslav Nakov"
+                        class="w-16 h-16 rounded-full border-2 border-slate-100 shadow-sm">
+                    <div class="space-y-0.5">
+                        <h4 class="font-bold text-slate-900 leading-tight">Preslav Nakov</h4>
+                        <p class="text-xs text-slate-500 leading-tight">MBZUAI, UAE</p>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-8 text-sm text-slate-500 italic">
+                * Competition Co-Leads
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer / Citations -->
+    <footer class="bg-slate-900 text-slate-400 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h3 class="text-white font-bold mb-6">Citations</h3>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 text-xs font-mono">
+                <!-- Citation 1 -->
+                <div>
+                    <p class="mb-2 text-brand-400 font-sans font-bold">ImageCLEF 2025 Multimodal Lab</p>
+                    <div class="bg-black/30 p-4 rounded-xl border border-white/5 overflow-x-auto">
+                        <pre class="whitespace-pre-wrap break-words">@inproceedings{ImageCLEFmultimodalReasoningOverview2025,
+  author = {Dimitrov, Dimitar and Hee, Ming Shan and Xie, Zhuohan and Jyoti Das, Rocktim and Ahsan, Momina and Ahmad, Sarfraz and Paev, Nikolay and Koychev, Ivan and Nakov, Preslav},
+  title = {Overview of ImageCLEF 2025 -- Multimodal Reasoning},
+  booktitle = {CLEF 2025 Working Notes},
+  series = {CEUR Workshop Proceedings},
+  publisher = {CEUR-WS.org},
+  address = {Madrid, Spain},
+  month = {September 9--12},
+  year = {2025}
+}</pre>
+                    </div>
+                </div>
+
+                <!-- Citation 2 -->
+                <div>
+                    <p class="mb-2 text-brand-400 font-sans font-bold">ImageCLEF 2025 Overview</p>
+                    <div class="bg-black/30 p-4 rounded-xl border border-white/5 overflow-x-auto">
+                        <pre class="whitespace-pre-wrap break-words">@inproceedings{OverviewImageCLEF2025,
+  title = {Overview of ImageCLEF 2025: Multimedia Retrieval in Medical, Social Media and Content Recommendation Applications},
+  author = {Ionescu, Bogdan and ... and Stein, Benno},
+  year = 2025,
+  month = {September 9-12},
+  booktitle = {Experimental IR Meets Multilinguality, Multimodality, and Interaction},
+  publisher = {Springer Lecture Notes in Computer Science LNCS},
+  address = {Madrid, Spain}
+}</pre>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-12 text-center text-sm border-t border-white/10 pt-8">
+                &copy; 2026 ImageCLEF MultimodalReasoning Team.
+            </div>
+        </div>
+    </footer>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>
