@@ -1,0 +1,21 @@
+[project]
+name = "image-dedup"
+version = "0.1.0"
+description = "Efficient image deduplication for examination question images"
+requires-python = ">=3.12"
+dependencies = [
+    "Pillow",
+    "imagehash",
+    "scikit-image",
+    "opencv-python",
+    "numpy",
+    "scipy",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+]
+
+[project.scripts]
+deduplicate = "deduplicate:main"
