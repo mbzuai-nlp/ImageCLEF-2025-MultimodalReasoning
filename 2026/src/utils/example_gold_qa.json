@@ -4,139 +4,139 @@
     "image_id": "img_84729",
     "question": "State and derive the quadratic formula for ax^2 + bx + c = 0.",
     "answer": "The quadratic formula is x = (-b ± sqrt(b^2 - 4ac)) / (2a), derived by completing the square.",
-    "prediction": "The quadratic formula is x = (-b ± sqrt(b^2 - 4ac)) / (2a), derived by completing the square."
+    "language": "English"
   },
   {
     "id": 2,
     "image_id": "img_19375",
     "question": "What is the divergence of the vector field F = (x^2, y^2, z^2)?",
     "answer": "The divergence is ∇·F = 2x + 2y + 2z.",
-    "prediction": "The divergence is 2x + 2y + 2z."
+    "language": "English"
   },
   {
     "id": 3,
     "image_id": "img_58201",
     "question": "State Newton’s second law in differential form.",
     "answer": "Newton’s second law is F = d(mv)/dt, and for constant mass it reduces to F = ma.",
-    "prediction": "Newton’s second law is F = ma."
+    "language": "English"
   },
   {
     "id": 4,
     "image_id": "img_77462",
     "question": "Compute the derivative of f(x) = e^(3x).",
     "answer": "The derivative is f'(x) = 3e^(3x).",
-    "prediction": "The derivative is e^(3x)."
+    "language": "English"
   },
   {
     "id": 5,
     "image_id": "img_66548",
     "question": "Write the Fourier series representation of a periodic function.",
     "answer": "A periodic function can be written as a0/2 + Σ(an cos(nx) + bn sin(nx)).",
-    "prediction": "It can be expressed as a sum of sine and cosine terms."
+    "language": "English"
   },
   {
     "id": 6,
     "image_id": "img_90834",
     "question": "What is the integral of 1/x dx?",
     "answer": "The integral of 1/x dx is ln|x| + C.",
-    "prediction": "The integral is ln|x| + constant."
+    "language": "English"
   },
   {
     "id": 7,
     "image_id": "img_12947",
     "question": "State Gauss’s law in integral form.",
     "answer": "Gauss’s law states that ∮E·dA = Q_enclosed/ε0.",
-    "prediction": "Gauss law: electric flux equals charge divided by epsilon zero."
+    "language": "English"
   },
   {
     "id": 8,
     "image_id": "img_55678",
     "question": "Find the eigenvalues of a 2x2 identity matrix.",
     "answer": "The eigenvalues of the identity matrix are 1 and 1.",
-    "prediction": "The eigenvalues are both equal to 1."
+    "language": "English"
   },
   {
     "id": 9,
     "image_id": "img_33421",
     "question": "Write the time-independent Schrödinger equation.",
     "answer": "The equation is Ĥψ = Eψ.",
-    "prediction": "The time-independent Schrödinger equation is iħ∂ψ/∂t = Ĥψ."
+    "language": "English"
   },
   {
     "id": 10,
     "image_id": "img_78102",
     "question": "Compute the Laplacian of φ = x^2 + y^2 + z^2.",
     "answer": "The Laplacian ∇^2φ = 2 + 2 + 2 = 6.",
-    "prediction": "The Laplacian is 6."
+    "language": "English"
   },
   {
     "id": 11,
     "image_id": "img_45019",
     "question": "State the binomial theorem.",
     "answer": "The binomial theorem states that (a + b)^n = Σ [nCk a^(n-k) b^k].",
-    "prediction": "(a + b)^n equals the sum over k of n choose k times a^(n-k) b^k."
+    "language": "English"
   },
   {
     "id": 12,
     "image_id": "img_99213",
     "question": "What is the Taylor expansion of e^x around x = 0?",
     "answer": "e^x = 1 + x + x^2/2! + x^3/3! + ...",
-    "prediction": "e^x = 1 + x + x^2/2 + x^3/6 + higher order terms."
+    "language": "English"
   },
   {
     "id": 13,
     "image_id": "img_67384",
     "question": "State Ohm’s law in differential form.",
     "answer": "Ohm’s law in differential form is J = σE.",
-    "prediction": "Ohm’s law states V = IR."
+    "language": "English"
   },
   {
     "id": 14,
     "image_id": "img_28476",
     "question": "Find the limit of sin(x)/x as x approaches 0.",
     "answer": "The limit is 1.",
-    "prediction": "The limit equals 1."
+    "language": "English"
   },
   {
     "id": 15,
     "image_id": "img_71930",
     "question": "Write Maxwell’s equation for Faraday’s law in differential form.",
     "answer": "Faraday’s law is ∇ × E = -∂B/∂t.",
-    "prediction": "Curl of E equals minus the time derivative of B."
+    "language": "English"
   },
   {
     "id": 16,
     "image_id": "img_86420",
     "question": "Compute the determinant of a 2x2 matrix [[a, b], [c, d]].",
     "answer": "The determinant is ad - bc.",
-    "prediction": "The determinant equals ad - bc."
+    "language": "English"
   },
   {
     "id": 17,
     "image_id": "img_31058",
     "question": "State the conservation of energy principle.",
     "answer": "Energy cannot be created or destroyed, only transformed from one form to another.",
-    "prediction": "Energy is always conserved."
+    "language": "English"
   },
   {
     "id": 18,
     "image_id": "img_54389",
     "question": "Find the derivative of sin(x).",
     "answer": "The derivative of sin(x) is cos(x).",
-    "prediction": "The derivative of sin(x) is -cos(x)."
+    "language": "English"
   },
   {
     "id": 19,
     "image_id": "img_11267",
     "question": "What is the expression for relativistic energy?",
     "answer": "The relativistic energy is E = mc^2.",
-    "prediction": "Energy is given by E = mc^2."
+    "language": "English"
   },
   {
     "id": 20,
     "image_id": "img_99831",
     "question": "Write the formula for the area of a circle.",
     "answer": "The area of a circle is A = πr^2.",
-    "prediction": "The area is πr squared."
+    "language": "English"
   }
 ]

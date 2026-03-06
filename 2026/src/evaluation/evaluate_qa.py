@@ -30,33 +30,116 @@ def atomic_write_json(path: str, data):
     os.replace(tmp, path)
 
 
-def load_input_data(path: str) -> List[Dict]:
+def _read_list_or_data(path: str, kind: str) -> List[Dict]:
     with open(path, "r", encoding="utf-8") as f:
         data = json.load(f)
 
-    # Support optional wrapper {"data": [...]}
     if isinstance(data, dict) and "data" in data:
         data = data["data"]
 
     if not isinstance(data, list):
-        raise ValueError("Input must be a list or {'data': [...]}")
+        raise ValueError(f"{kind} file must be a list or {{'data': [...]}}")
 
     if len(data) == 0:
-        raise ValueError("Input data is empty")
+        raise ValueError(f"{kind} file is empty")
 
-    required_fields = {"id", "image_id", "question", "answer", "prediction"}
+    return data
 
-    for idx, item in enumerate(data):
+
+def _build_id_map(
+    items: List[Dict], required_fields: set, kind: str
+) -> Dict[int, Dict]:
+    id_map = {}
+    for idx, item in enumerate(items):
         if not isinstance(item, dict):
-            raise ValueError(f"Item at index {idx} is not a dictionary")
+            raise ValueError(f"{kind} item at index {idx} is not a dictionary")
 
         missing = required_fields - set(item.keys())
         if missing:
             raise ValueError(
-                f"Item at index {idx} is missing required fields: {missing}"
+                f"{kind} item at index {idx} is missing required fields: {missing}"
             )
 
-    return data
+        try:
+            item_id = int(item["id"])
+        except Exception:
+            raise ValueError(
+                f"{kind} item at index {idx} has a non-integer id: {item.get('id')}"
+            )
+
+        if item_id in id_map:
+            raise ValueError(f"{kind} file contains duplicate id: {item_id}")
+
+        id_map[item_id] = item
+
+    return id_map
+
+
+def load_input_data(gold_path: str, pred_path: str) -> List[Dict]:
+    gold_items = _read_list_or_data(gold_path, "Gold")
+    pred_items = _read_list_or_data(pred_path, "Prediction")
+
+    gold_map = _build_id_map(
+        gold_items,
+        {"id", "answer"},
+        "Gold",
+    )
+    pred_map = _build_id_map(
+        pred_items,
+        {"id", "prediction"},
+        "Prediction",
+    )
+
+    gold_ids = set(gold_map.keys())
+    pred_ids = set(pred_map.keys())
+
+    missing_in_pred = gold_ids - pred_ids
+    extra_in_pred = pred_ids - gold_ids
+
+    if missing_in_pred or extra_in_pred:
+        msg = []
+        if missing_in_pred:
+            msg.append(f"Missing prediction ids: {sorted(list(missing_in_pred))[:5]}")
+        if extra_in_pred:
+            msg.append(f"Unknown prediction ids: {sorted(list(extra_in_pred))[:5]}")
+        raise ValueError(" | ".join(msg))
+
+    merged = []
+    for item in gold_items:
+        item_id = int(item["id"])
+        question = gold_map[item_id].get("question", pred_map[item_id].get("question"))
+        if question is None:
+            raise ValueError(
+                f"Missing question for id {item_id}. Include 'question' in either gold or prediction file."
+            )
+
+        merged_item = {
+            "id": item_id,
+            "question": question,
+            "answer": gold_map[item_id]["answer"],
+            "prediction": pred_map[item_id]["prediction"],
+        }
+
+        for key in ("image_id", "language"):
+            if key in gold_map[item_id]:
+                merged_item[key] = gold_map[item_id][key]
+            elif key in pred_map[item_id]:
+                merged_item[key] = pred_map[item_id][key]
+
+        merged.append(merged_item)
+
+    return merged
+
+
+def get_base_fields(item: Dict) -> Dict:
+    base = {
+        "answer": item["answer"],
+        "prediction": item["prediction"],
+    }
+    for key in ("question", "image_id", "language"):
+        if key in item:
+            base[key] = item[key]
+    return base
 
 
 def load_json(path: str) -> List[Dict]:
@@ -178,8 +261,7 @@ def step_bleu(items: List[Dict], metrics_path: str):
             metrics_path,
             {
                 _id: {
-                    "answer": it["answer"],
-                    "prediction": it["prediction"],
+                    **get_base_fields(it),
                     "bleu_scores": {
                         "bleu-1": b1,
                         "bleu-2": b2,
@@ -208,8 +290,7 @@ def step_rouge(items: List[Dict], metrics_path: str):
             metrics_path,
             {
                 _id: {
-                    "answer": it["answer"],
-                    "prediction": it["prediction"],
+                    **get_base_fields(it),
                     "rouge_scores": r,
                 }
             },
@@ -232,8 +313,7 @@ def step_meteor(items: List[Dict], metrics_path: str):
             metrics_path,
             {
                 _id: {
-                    "answer": it["answer"],
-                    "prediction": it["prediction"],
+                    **get_base_fields(it),
                     "meteor": m,
                 }
             },
@@ -279,8 +359,7 @@ def step_comet(items: List[Dict], metrics_path: str, batch_size: int = 64):
             metrics_path,
             {
                 pid: {
-                    "answer": base[pid]["answer"],
-                    "prediction": base[pid]["prediction"],
+                    **get_base_fields(base[pid]),
                     "comet": scores[i],
                 }
                 for i, pid in enumerate(pending_ids[s:e])
@@ -290,7 +369,8 @@ def step_comet(items: List[Dict], metrics_path: str, batch_size: int = 64):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--input", required=True)
+    ap.add_argument("--pred_file", required=True)
+    ap.add_argument("--gold_file", required=True)
     ap.add_argument("--batch_size_comet", type=int, default=64)
     args = ap.parse_args()
 
@@ -298,7 +378,7 @@ def main():
     ensure_outdir(out_dir)
     metrics_path = os.path.join(out_dir, f"metrics.json")
 
-    items = load_input_data(args.input)
+    items = load_input_data(args.gold_file, args.pred_file)
 
     step_bleu(items, metrics_path)
     step_rouge(items, metrics_path)

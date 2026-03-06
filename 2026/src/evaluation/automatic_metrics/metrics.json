@@ -3,6 +3,9 @@
     "id": 1,
     "answer": "The quadratic formula is x = (-b ± sqrt(b^2 - 4ac)) / (2a), derived by completing the square.",
     "prediction": "The quadratic formula is x = (-b ± sqrt(b^2 - 4ac)) / (2a), derived by completing the square.",
+    "question": "State and derive the quadratic formula for ax^2 + bx + c = 0.",
+    "image_id": "img_84729",
+    "language": "English",
     "bleu_scores": {
       "bleu-1": 100.00000000000004,
       "bleu-2": 100.00000000000004,
@@ -22,6 +25,9 @@
     "id": 2,
     "answer": "The divergence is ∇·F = 2x + 2y + 2z.",
     "prediction": "The divergence is 2x + 2y + 2z.",
+    "question": "What is the divergence of the vector field F = (x^2, y^2, z^2)?",
+    "image_id": "img_19375",
+    "language": "English",
     "bleu_scores": {
       "bleu-1": 80.07374029168083,
       "bleu-2": 74.90212546224643,
@@ -41,6 +47,9 @@
     "id": 3,
     "answer": "Newton’s second law is F = d(mv)/dt, and for constant mass it reduces to F = ma.",
     "prediction": "Newton’s second law is F = ma.",
+    "question": "State Newton’s second law in differential form.",
+    "image_id": "img_58201",
+    "language": "English",
     "bleu_scores": {
       "bleu-1": 13.533528323661276,
       "bleu-2": 13.533528323661276,
@@ -60,6 +69,9 @@
     "id": 4,
     "answer": "The derivative is f'(x) = 3e^(3x).",
     "prediction": "The derivative is e^(3x).",
+    "question": "Compute the derivative of f(x) = e^(3x).",
+    "image_id": "img_77462",
+    "language": "English",
     "bleu_scores": {
       "bleu-1": 51.000304065549585,
       "bleu-2": 46.84677063277009,
@@ -79,6 +91,9 @@
     "id": 5,
     "answer": "A periodic function can be written as a0/2 + Σ(an cos(nx) + bn sin(nx)).",
     "prediction": "It can be expressed as a sum of sine and cosine terms.",
+    "question": "Write the Fourier series representation of a periodic function.",
+    "image_id": "img_66548",
+    "language": "English",
     "bleu_scores": {
       "bleu-1": 11.319367420659766,
       "bleu-2": 5.890785573763023,
@@ -98,6 +113,9 @@
     "id": 6,
     "answer": "The integral of 1/x dx is ln|x| + C.",
     "prediction": "The integral is ln|x| + constant.",
+    "question": "What is the integral of 1/x dx?",
+    "image_id": "img_90834",
+    "language": "English",
     "bleu_scores": {
       "bleu-1": 54.58775937413701,
       "bleu-2": 46.981662880624526,
@@ -117,6 +135,9 @@
     "id": 7,
     "answer": "Gauss’s law states that ∮E·dA = Q_enclosed/ε0.",
     "prediction": "Gauss law: electric flux equals charge divided by epsilon zero.",
+    "question": "State Gauss’s law in integral form.",
+    "image_id": "img_12947",
+    "language": "English",
     "bleu_scores": {
       "bleu-1": 16.666666666666668,
       "bleu-2": 8.703882797784892,
@@ -136,6 +157,9 @@
     "id": 8,
     "answer": "The eigenvalues of the identity matrix are 1 and 1.",
     "prediction": "The eigenvalues are both equal to 1.",
+    "question": "Find the eigenvalues of a 2x2 identity matrix.",
+    "image_id": "img_55678",
+    "language": "English",
     "bleu_scores": {
       "bleu-1": 42.95557992443578,
       "bleu-2": 29.043272909974185,
@@ -155,6 +179,9 @@
     "id": 9,
     "answer": "The equation is Ĥψ = Eψ.",
     "prediction": "The time-independent Schrödinger equation is iħ∂ψ/∂t = Ĥψ.",
+    "question": "Write the time-independent Schrödinger equation.",
+    "image_id": "img_33421",
+    "language": "English",
     "bleu_scores": {
       "bleu-1": 54.54545454545453,
       "bleu-2": 23.35496832484569,
@@ -174,6 +201,9 @@
     "id": 10,
     "answer": "The Laplacian ∇^2φ = 2 + 2 + 2 = 6.",
     "prediction": "The Laplacian is 6.",
+    "question": "Compute the Laplacian of φ = x^2 + y^2 + z^2.",
+    "image_id": "img_78102",
+    "language": "English",
     "bleu_scores": {
       "bleu-1": 13.22391105772692,
       "bleu-2": 10.454419629475865,
@@ -193,6 +223,9 @@
     "id": 11,
     "answer": "The binomial theorem states that (a + b)^n = Σ [nCk a^(n-k) b^k].",
     "prediction": "(a + b)^n equals the sum over k of n choose k times a^(n-k) b^k.",
+    "question": "State the binomial theorem.",
+    "image_id": "img_45019",
+    "language": "English",
     "bleu_scores": {
       "bleu-1": 61.538461538461554,
       "bleu-2": 56.568542494923825,
@@ -212,6 +245,9 @@
     "id": 12,
     "answer": "e^x = 1 + x + x^2/2! + x^3/3! + ...",
     "prediction": "e^x = 1 + x + x^2/2 + x^3/6 + higher order terms.",
+    "question": "What is the Taylor expansion of e^x around x = 0?",
+    "image_id": "img_99213",
+    "language": "English",
     "bleu_scores": {
       "bleu-1": 79.93245475909485,
       "bleu-2": 73.03143713117905,
@@ -231,6 +267,9 @@
     "id": 13,
     "answer": "Ohm’s law in differential form is J = σE.",
     "prediction": "Ohm’s law states V = IR.",
+    "question": "State Ohm’s law in differential form.",
+    "image_id": "img_67384",
+    "language": "English",
     "bleu_scores": {
       "bleu-1": 37.22508900177462,
       "bleu-2": 20.103845774637964,
@@ -250,6 +289,9 @@
     "id": 14,
     "answer": "The limit is 1.",
     "prediction": "The limit equals 1.",
+    "question": "Find the limit of sin(x)/x as x approaches 0.",
+    "image_id": "img_28476",
+    "language": "English",
     "bleu_scores": {
       "bleu-1": 79.99999999999997,
       "bleu-2": 63.245553203367585,
@@ -269,6 +311,9 @@
     "id": 15,
     "answer": "Faraday’s law is ∇ × E = -∂B/∂t.",
     "prediction": "Curl of E equals minus the time derivative of B.",
+    "question": "Write Maxwell’s equation for Faraday’s law in differential form.",
+    "image_id": "img_71930",
+    "language": "English",
     "bleu_scores": {
       "bleu-1": 18.18181818181818,
       "bleu-2": 9.53462589245592,
@@ -288,6 +333,9 @@
     "id": 16,
     "answer": "The determinant is ad - bc.",
     "prediction": "The determinant equals ad - bc.",
+    "question": "Compute the determinant of a 2x2 matrix [[a, b], [c, d]].",
+    "image_id": "img_86420",
+    "language": "English",
     "bleu_scores": {
       "bleu-1": 85.7142857142857,
       "bleu-2": 75.59289460184542,
@@ -307,6 +355,9 @@
     "id": 17,
     "answer": "Energy cannot be created or destroyed, only transformed from one form to another.",
     "prediction": "Energy is always conserved.",
+    "question": "State the conservation of energy principle.",
+    "image_id": "img_31058",
+    "language": "English",
     "bleu_scores": {
       "bleu-1": 5.413411329464508,
       "bleu-2": 3.026188930712537,
@@ -326,6 +377,9 @@
     "id": 18,
     "answer": "The derivative of sin(x) is cos(x).",
     "prediction": "The derivative of sin(x) is -cos(x).",
+    "question": "Find the derivative of sin(x).",
+    "image_id": "img_54389",
+    "language": "English",
     "bleu_scores": {
       "bleu-1": 92.30769230769226,
       "bleu-2": 87.70580193070288,
@@ -345,6 +399,9 @@
     "id": 19,
     "answer": "The relativistic energy is E = mc^2.",
     "prediction": "Energy is given by E = mc^2.",
+    "question": "What is the expression for relativistic energy?",
+    "image_id": "img_11267",
+    "language": "English",
     "bleu_scores": {
       "bleu-1": 70.00000000000003,
       "bleu-2": 62.360956446232365,
@@ -364,6 +421,9 @@
     "id": 20,
     "answer": "The area of a circle is A = πr^2.",
     "prediction": "The area is πr squared.",
+    "question": "Write the formula for the area of a circle.",
+    "image_id": "img_99831",
+    "language": "English",
     "bleu_scores": {
       "bleu-1": 30.6566200976202,
       "bleu-2": 15.018615295504256,
