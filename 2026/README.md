@@ -138,11 +138,21 @@ python src/evaluation/evaluate_qa.py \
 
 Optional COMET batch size:
 
-```bash
+````bash
 python src/evaluation/evaluate_qa.py \
   --pred_file ./pred.json \
   --gold_file ./gold.json \
   --batch_size_comet 64
+
+Optional output path:
+
+```bash
+python src/evaluation/evaluate_qa.py \
+  --pred_file ./pred.json \
+  --gold_file ./gold.json \
+  --out_file ./metrics_summary.json
+````
+
 ```
 
 **Expected fields:**
@@ -150,14 +160,14 @@ python src/evaluation/evaluate_qa.py \
 - Gold file: `id`, `question`, `answer` (`image_id` is optional)
 - Prediction file: `id`, `prediction`
 
-The script computes and stores:
+The script computes and reports task-level averages for:
 
 - `bleu_scores` (`bleu-1` to `bleu-4`) and `bleu_avg`
 - `rouge_scores` (`rouge-1`, `rouge-2`, `rouge-l`)
 - `meteor`
 - `comet`
 
-Output file is written incrementally to:
+Output is printed to stdout and saved as a single summary JSON (default path):
 
 - `2026/src/evaluation/automatic_metrics/metrics.json`
 
@@ -166,17 +176,19 @@ Output file is written incrementally to:
 ## 📁 File Structure
 
 ```
+
 ImageCLEF-MultimodalReasoning-2026/
 ├── README.md
 ├── requirements.txt
 ├── run.sh
 └── src/
-    └── evaluation/
-        ├── evaluate_mcq.py
-        ├── evaluate_qa.py
-        ├── example_maths_english.json
-        └── automatic_metrics/
-            └── metrics.json
+└── evaluation/
+├── evaluate_mcq.py
+├── evaluate_qa.py
+├── example_maths_english.json
+└── automatic_metrics/
+└── metrics.json
+
 ```
 
 ## 📌 Official Resources
@@ -184,3 +196,4 @@ ImageCLEF-MultimodalReasoning-2026/
 For complete task descriptions, datasets, evaluation scripts, and submission guidelines, refer to the official task website:
 
 👉 https://mbzuai-nlp.github.io/ImageCLEF-MultimodalReasoning/2026/
+```
