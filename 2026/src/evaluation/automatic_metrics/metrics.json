@@ -1,0 +1,17 @@
+{
+  "num_samples": 20,
+  "bleu_scores": {
+    "bleu-1": 0.4994,
+    "bleu-2": 0.4129,
+    "bleu-3": 0.3539,
+    "bleu-4": 0.3115
+  },
+  "bleu_avg": 0.3944,
+  "rouge_scores": {
+    "rouge-1": 0.5841,
+    "rouge-2": 0.3832,
+    "rouge-l": 0.5773
+  },
+  "meteor": 0.5289,
+  "comet": 0.7021
+}

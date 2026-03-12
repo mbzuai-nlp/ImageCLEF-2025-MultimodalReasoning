@@ -1,0 +1,13 @@
+openai
+requests
+tqdm
+pillow
+numpy
+torch
+transformers
+vllm
+python-dotenv
+nltk
+sacrebleu
+rouge-score
+unbabel-comet
