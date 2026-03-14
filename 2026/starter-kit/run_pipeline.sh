@@ -48,12 +48,12 @@ else
 fi
 
 # We assume resources are allocated (e.g., via srun) as per user instruction.
-echo "Running training script with 4 GPUs using torchrun..."
+echo "Running training script using torchrun..."
 NUM_GPUS=1
 torchrun --nproc_per_node=$NUM_GPUS train.py
 
-# # 4. Inference
-# echo -e "${GREEN}[4/4] Running inference...${NC}"
-# python inference.py
+# 4. Inference
+echo -e "${GREEN}[4/4] Running inference...${NC}"
+python inference.py
 
-# echo -e "${GREEN}Pipeline completed successfully!${NC}"
+echo -e "${GREEN}Pipeline completed successfully!${NC}"
