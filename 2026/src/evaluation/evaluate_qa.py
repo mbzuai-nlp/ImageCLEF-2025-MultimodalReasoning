@@ -11,8 +11,35 @@ from sacrebleu.metrics import BLEU
 from rouge_score import rouge_scorer
 import nltk
 from nltk.translate.meteor_score import single_meteor_score
+import warnings
+warnings.filterwarnings("ignore")
 
 _TOKEN_RE = re.compile(r"\w+|[^\w\s]", re.UNICODE)
+
+# Full language name → ISO 639-1 two-letter code.
+# Keys are lower-cased for case-insensitive lookup.
+_LANGUAGE_ISO2: Dict[str, str] = {
+    "bulgarian": "bg",
+    "chinese": "zh",
+    "croatian": "hr",
+    "english": "en",
+    "italian": "it",
+    "serbian": "sr",
+}
+
+
+def normalise_language(lang: str) -> str:
+    """Return the ISO 639-1 two-letter code for *lang*.
+
+    If *lang* is already a 2-letter code it is returned as-is (lower-cased).
+    Unknown names are returned unchanged so they still surface in reports.
+    """
+    if not lang:
+        return "unknown"
+    stripped = lang.strip()
+    if len(stripped) == 2:
+        return stripped.lower()
+    return _LANGUAGE_ISO2.get(stripped.lower(), stripped)
 
 
 load_dotenv(find_dotenv(), override=True)
@@ -77,13 +104,7 @@ def _build_id_map(
                 f"{kind} item at index {idx} is missing required fields: {missing}"
             )
 
-        try:
-            item_id = int(item["id"])
-        except Exception:
-            raise ValueError(
-                f"{kind} item at index {idx} has a non-integer id: {item.get('id')}"
-            )
-
+        item_id = item["question_id"]
         if item_id in id_map:
             raise ValueError(f"{kind} file contains duplicate id: {item_id}")
 
@@ -92,18 +113,29 @@ def _build_id_map(
     return id_map
 
 
+def _join_answers(answers) -> str:
+    """
+    answers in the JSON is a list of strings (one per sub-question).
+    Join them with a newline so metric functions receive a single string.
+    """
+    if isinstance(answers, list):
+        return "\n".join(str(a) for a in answers)
+    return str(answers)
+
+
 def load_input_data(gold_path: str, pred_path: str) -> List[Dict]:
     gold_items = _read_list_or_data(gold_path, "Gold")
     pred_items = _read_list_or_data(pred_path, "Prediction")
 
     gold_map = _build_id_map(
         gold_items,
-        {"id", "answer"},
+        {"question_id", "answers"},
         "Gold",
     )
+    # Prediction file only needs question_id + answers
     pred_map = _build_id_map(
         pred_items,
-        {"id", "prediction"},
+        {"question_id", "answers"},
         "Prediction",
     )
 
@@ -123,21 +155,19 @@ def load_input_data(gold_path: str, pred_path: str) -> List[Dict]:
 
     merged = []
     for item in gold_items:
-        item_id = int(item["id"])
-        question = gold_map[item_id].get("question", pred_map[item_id].get("question"))
-        if question is None:
-            raise ValueError(
-                f"Missing question for id {item_id}. Include 'question' in either gold or prediction file."
-            )
+        item_id = item["question_id"]
 
         merged_item = {
-            "id": item_id,
-            "question": question,
-            "answer": gold_map[item_id]["answer"],
-            "prediction": pred_map[item_id]["prediction"],
+            "question_id": item_id,
+            # Raw lists kept for potential future use
+            "gold_answers": gold_map[item_id]["answers"],
+            "pred_answers": pred_map[item_id]["answers"],
+            # Pre-joined strings used by all metric functions
+            "gold_answers_str": _join_answers(gold_map[item_id]["answers"]),
+            "pred_answers_str": _join_answers(pred_map[item_id]["answers"]),
         }
 
-        for key in ("image_id", "language"):
+        for key in ("language",):
             if key in gold_map[item_id]:
                 merged_item[key] = gold_map[item_id][key]
             elif key in pred_map[item_id]:
@@ -208,111 +238,141 @@ def comet_scores_batch(
     return [float(x) for x in out.scores]
 
 
-def step_bleu(items: List[Dict]) -> Dict[str, float]:
-    bleu1, bleu2, bleu3, bleu4 = [], [], [], []
-    for it in tqdm(items, desc="BLEU-1..4"):
-        hyp = str(it["prediction"])
-        ref = str(it["answer"])
-
-        bleu1.append(sentence_bleu_n(hyp, ref, 1))
-        bleu2.append(sentence_bleu_n(hyp, ref, 2))
-        bleu3.append(sentence_bleu_n(hyp, ref, 3))
-        bleu4.append(sentence_bleu_n(hyp, ref, 4))
-
-    score_1 = avg(bleu1)
-    score_2 = avg(bleu2)
-    score_3 = avg(bleu3)
-    score_4 = avg(bleu4)
-
-    return {
-        "bleu-1": score_1,
-        "bleu-2": score_2,
-        "bleu-3": score_3,
-        "bleu-4": score_4,
-        "bleu_avg": avg([score_1, score_2, score_3, score_4]),
-    }
+def _group_by_language(items: List[Dict]) -> Dict[str, List[Dict]]:
+    """Partition items by their 'language' field. Items without one go to 'unknown'."""
+    groups: Dict[str, List[Dict]] = {}
+    for it in items:
+        lang = it.get("language", "unknown") or "unknown"
+        groups.setdefault(lang, []).append(it)
+    return groups
 
 
-def step_rouge(items: List[Dict]) -> Dict[str, float]:
-    rouge1, rouge2, rougel = [], [], []
+def step_bleu(items: List[Dict]):
+    """Returns (overall_dict, {lang: overall_dict})."""
+    groups = _group_by_language(items)
+    lang_scores = {}
+    all_b1, all_b2, all_b3, all_b4 = [], [], [], []
 
-    for it in tqdm(items, desc="ROUGE-1/2/L"):
-        hyp = str(it["prediction"])
-        ref = str(it["answer"])
-        r = sentence_rouge_scores(hyp, ref)
+    for lang, subset in groups.items():
+        b1, b2, b3, b4 = [], [], [], []
+        for it in tqdm(subset, desc=f"BLEU-1..4 [{lang}]"):
+            hyp, ref = it["pred_answers_str"], it["gold_answers_str"]
+            b1.append(sentence_bleu_n(hyp, ref, 1))
+            b2.append(sentence_bleu_n(hyp, ref, 2))
+            b3.append(sentence_bleu_n(hyp, ref, 3))
+            b4.append(sentence_bleu_n(hyp, ref, 4))
+        all_b1.extend(b1); all_b2.extend(b2); all_b3.extend(b3); all_b4.extend(b4)
+        s1, s2, s3, s4 = avg(b1), avg(b2), avg(b3), avg(b4)
+        lang_scores[lang] = {"bleu-1": s1, "bleu-2": s2, "bleu-3": s3, "bleu-4": s4,
+                             "bleu_avg": avg([s1, s2, s3, s4])}
 
-        rouge1.append(r["rouge-1"])
-        rouge2.append(r["rouge-2"])
-        rougel.append(r["rouge-l"])
-
-    return {
-        "rouge-1": avg(rouge1),
-        "rouge-2": avg(rouge2),
-        "rouge-l": avg(rougel),
-    }
-
-
-def step_meteor(items: List[Dict]) -> float:
-    meteor_scores = []
-
-    for it in tqdm(items, desc="METEOR"):
-        hyp = str(it["prediction"])
-        ref = str(it["answer"])
-        meteor_scores.append(sentence_meteor(hyp, ref))
-
-    return avg(meteor_scores)
+    s1, s2, s3, s4 = avg(all_b1), avg(all_b2), avg(all_b3), avg(all_b4)
+    overall = {"bleu-1": s1, "bleu-2": s2, "bleu-3": s3, "bleu-4": s4,
+               "bleu_avg": avg([s1, s2, s3, s4])}
+    return overall, lang_scores
 
 
-def step_comet(items: List[Dict], batch_size: int = 64) -> float:
+def step_rouge(items: List[Dict]):
+    """Returns (overall_dict, {lang: dict})."""
+    groups = _group_by_language(items)
+    lang_scores = {}
+    all_r1, all_r2, all_rl = [], [], []
+
+    for lang, subset in tqdm(groups.items(), desc="ROUGE-1/2/L (languages)"):
+        r1, r2, rl = [], [], []
+        for it in subset:
+            hyp, ref = it["pred_answers_str"], it["gold_answers_str"]
+            r = sentence_rouge_scores(hyp, ref)
+            r1.append(r["rouge-1"]); r2.append(r["rouge-2"]); rl.append(r["rouge-l"])
+        all_r1.extend(r1); all_r2.extend(r2); all_rl.extend(rl)
+        lang_scores[lang] = {"rouge-1": avg(r1), "rouge-2": avg(r2), "rouge-l": avg(rl)}
+
+    overall = {"rouge-1": avg(all_r1), "rouge-2": avg(all_r2), "rouge-l": avg(all_rl)}
+    return overall, lang_scores
+
+
+def step_meteor(items: List[Dict]):
+    """Returns (overall_float, {lang: float})."""
+    groups = _group_by_language(items)
+    lang_scores = {}
+    all_scores = []
+
+    for lang, subset in tqdm(groups.items(), desc="METEOR (languages)"):
+        scores = [sentence_meteor(it["pred_answers_str"], it["gold_answers_str"]) for it in subset]
+        all_scores.extend(scores)
+        lang_scores[lang] = avg(scores)
+
+    return avg(all_scores), lang_scores
+
+
+def step_comet(items: List[Dict], batch_size: int = 64):
     """
-    Computes a single meaningful COMET score for QA/text generation:
-      src = question
-      mt  = prediction
-      ref = answer
+    Computes COMET score for open-ended QA.
 
-    Returns the task-level average COMET score.
+    wmt22-comet-da requires (src, mt, ref). Since the dataset does not
+    include the question text, we use the gold answer string as `src`
+    (a common reference-guided proxy when no source sentence is available).
+      src = gold answers (reference as source proxy)
+      mt  = predicted answers
+      ref = gold answers
+
+    Returns (overall_float, {lang: float}).
     """
     model = load_comet_model("Unbabel/wmt22-comet-da")
 
-    srcs = [str(it["question"]) for it in items]
-    mts = [str(it["prediction"]) for it in items]
-    refs = [str(it["answer"]) for it in items]
+    # Score every item in one batched pass
+    srcs = [it["gold_answers_str"] for it in items]  # src = gold, no question text available
+    mts  = [it["pred_answers_str"] for it in items]
+    refs = [it["gold_answers_str"] for it in items]
 
     all_scores = []
     for s in tqdm(range(0, len(items), batch_size), desc="COMET"):
         e = s + batch_size
-        scores = comet_scores_batch(
-            model,
-            srcs[s:e],
-            mts[s:e],
-            refs[s:e],
-            batch_size=batch_size,
+        all_scores.extend(
+            comet_scores_batch(model, srcs[s:e], mts[s:e], refs[s:e], batch_size=batch_size)
         )
-        all_scores.extend(scores)
 
-    return avg(all_scores)
+    # Per-language averages using the same ordering as `items`
+    lang_buckets: Dict[str, List[float]] = {}
+    for it, sc in zip(items, all_scores):
+        lang = it.get("language", "unknown") or "unknown"
+        lang_buckets.setdefault(lang, []).append(sc)
+
+    lang_scores = {lang: avg(scores) for lang, scores in lang_buckets.items()}
+    return avg(all_scores), lang_scores
 
 
 def evaluate_openqa(items: List[Dict], batch_size_comet: int = 64) -> Dict:
     ensure_nltk_meteor_resources()
 
-    bleu_scores = step_bleu(items)
-    rouge_scores = step_rouge(items)
-    meteor = step_meteor(items)
-    comet = step_comet(items, batch_size=batch_size_comet)
+    bleu_overall, bleu_lang   = step_bleu(items)
+    rouge_overall, rouge_lang = step_rouge(items)
+    meteor_overall, meteor_lang = step_meteor(items)
+    comet_overall, comet_lang   = step_comet(items, batch_size=batch_size_comet)
+
+    # Flat comet keys as requested: comet_overall, comet_{lang}
+    comet_section: Dict = {"comet_overall": comet_overall}
+    for lang, score in sorted(comet_lang.items()):
+        comet_section[f"comet_{normalise_language(lang)}"] = score
+
+    # Nested per-language for other metrics
+    langs = sorted(set(list(bleu_lang) + list(rouge_lang) + list(meteor_lang)))
+    per_language = {
+        lang: {
+            "bleu_avg": bleu_lang.get(lang, {}).get("bleu_avg", 0.0),
+            "rouge_l":  rouge_lang.get(lang, {}).get("rouge-l", 0.0),
+            "meteor":   meteor_lang.get(lang, 0.0),
+        }
+        for lang in langs
+    }
 
     report = {
         "num_samples": len(items),
-        "bleu_scores": {
-            "bleu-1": bleu_scores["bleu-1"],
-            "bleu-2": bleu_scores["bleu-2"],
-            "bleu-3": bleu_scores["bleu-3"],
-            "bleu-4": bleu_scores["bleu-4"],
-        },
-        "bleu_avg": bleu_scores["bleu_avg"],
-        "rouge_scores": rouge_scores,
-        "meteor": meteor,
-        "comet": comet,
+        "bleu_avg":    bleu_overall["bleu_avg"],
+        "rouge_l":     rouge_overall["rouge-l"],
+        "meteor":      meteor_overall,
+        **comet_section,
+        "per_language": per_language,
     }
 
     return round_float_values(report, ndigits=4)
@@ -326,8 +386,13 @@ def main():
     ap.add_argument(
         "--out_file",
         type=str,
-        default="2026/src/evaluation/automatic_metrics/metrics.json",
-        help="Path to save the average task-level metrics report.",
+        default="scores.json",
+        help="Path to write the metrics report JSON. Defaults to 'metrics.json' in the current working directory.",
+    )
+    ap.add_argument(
+        "--verbose",
+        action="store_true",
+        help="Print the metrics report to stdout after writing the file.",
     )
     args = ap.parse_args()
 
@@ -335,12 +400,13 @@ def main():
 
     report = evaluate_openqa(items, batch_size_comet=args.batch_size_comet)
 
-    out_dir = os.path.dirname(args.out_file)
-    if out_dir:
-        ensure_outdir(out_dir)
+    out_dir = os.path.dirname(os.path.abspath(args.out_file))
+    ensure_outdir(out_dir)
     atomic_write_json(args.out_file, report)
 
-    print(json.dumps(report, ensure_ascii=False, indent=2))
+    if args.verbose:
+        print(json.dumps(report, ensure_ascii=False, indent=2))
+        print(f"Metrics written to: {os.path.abspath(args.out_file)}")
 
 
 if __name__ == "__main__":
