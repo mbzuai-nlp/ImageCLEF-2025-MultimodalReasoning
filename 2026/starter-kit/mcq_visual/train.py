@@ -1,13 +1,19 @@
-import numpy as np
-import re
-from unsloth import FastVisionModel, is_bfloat16_supported, UnslothVisionDataCollator
+from unsloth import FastVisionModel, UnslothVisionDataCollator, is_bfloat16_supported
 from unsloth.trainer import SFTTrainer
-from transformers import TrainingArguments, EvalPrediction
-from datasets import load_dataset, concatenate_datasets
-from datetime import datetime
+from datasets import concatenate_datasets, load_dataset
+from transformers import TrainingArguments
 
-# Function to format the dataset for Qwen-VL (Batched version)
-def format_data(examples):
+import argparse
+from datetime import datetime
+from functools import partial
+
+try:
+    from .image_utils import ImagePreprocessingConfig, resize_image_if_needed
+except ImportError:
+    from image_utils import ImagePreprocessingConfig, resize_image_if_needed
+
+
+def build_instruction_text() -> str:
     question = (
         "You are a sophisticated Vision-Language Model (VLM) capable of analyzing images containing multiple-choice questions, regardless of language. To guide your analysis, you may adopt the following process:",
         "1. Examine the image carefully for all textual and visual information.",
@@ -19,17 +25,22 @@ def format_data(examples):
         "7. Select the correct answer(s) based solely on your analysis.",
         "8. Respond by outputting only the corresponding letter(s) without any extra explanation."
     )
-    
-    questions = ["\n".join(question)] * len(examples['image'])
-    
+    return "\n".join(question)
+
+
+# Function to format the dataset for Qwen-VL (Batched version)
+def format_data(examples, image_config: ImagePreprocessingConfig):
+    questions = [build_instruction_text()] * len(examples['image'])
+
     all_messages = []
     for image, answer, question in zip(examples['image'], examples['answer_key'], questions):
-        answer_text = f"The answer is {str(answer).strip()}."
+        answer_text = str(answer).strip().upper()
+        processed_image = resize_image_if_needed(image, image_config)
         conversation = [
             {
                 "role": "user",
                 "content": [
-                    {"type": "image", "image": image},
+                    {"type": "image", "image": processed_image},
                     {"type": "text", "text": question}
                 ]
             },
@@ -38,65 +49,70 @@ def format_data(examples):
                 "content": [
                     {"type": "text", "text": answer_text}
                 ]
-            }
+            },
         ]
         all_messages.append(conversation)
+        
     return {"messages": all_messages}
 
 
-_ANSWER_RE = re.compile(r"the answer is\s*([A-Za-z0-9]+)", re.IGNORECASE)
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Train MCQ visual model.")
+    parser.add_argument(
+        "--model-id-or-path",
+        type=str,
+        default="unsloth/Qwen3-VL-8B-Instruct",
+        help="HF model ID or local model path used as the training base model.",
+    )
+    parser.add_argument(
+        "--output-model-path",
+        required=True,
+        help="Directory path where the trained model and tokenizer will be saved.",
+    )
+    parser.add_argument(
+        "--no-resize-images",
+        action="store_true",
+        help="Disable image resizing before building training examples.",
+    )
+    parser.add_argument(
+        "--max-image-long-side",
+        type=positive_int,
+        default=2048,
+        help="Maximum allowed longest side for training images.",
+    )
+    parser.add_argument(
+        "--max-image-pixels",
+        type=positive_int,
+        default=2_000_000,
+        help="Maximum allowed total pixels for training images.",
+    )
+    return parser.parse_args()
 
 
-def _extract_answer(text: str):
-    match = _ANSWER_RE.search(text)
-    if not match:
-        return None
-    return match.group(1).strip().upper()
+def positive_int(value: str) -> int:
+    parsed = int(value)
+    if parsed < 1:
+        raise argparse.ArgumentTypeError("Value must be >= 1.")
+    return parsed
 
 
-def build_compute_metrics(tokenizer):
-    def compute_metrics(eval_pred: EvalPrediction):
-        predictions, labels = eval_pred
-        # In eval, predictions are preprocessed token IDs (argmax over vocab).
-        if isinstance(predictions, tuple):
-            predictions = predictions[0]
-
-        total, correct = 0, 0
-        for pred_ids, label_ids in zip(predictions, labels):
-            label_mask = label_ids != -100
-            if not np.any(label_mask):
-                continue
-
-            pred_text = tokenizer.decode(pred_ids[label_mask], skip_special_tokens=True)
-            label_text = tokenizer.decode(label_ids[label_mask], skip_special_tokens=True)
-
-            pred_answer = _extract_answer(pred_text)
-            gt_answer = _extract_answer(label_text)
-            if gt_answer is None:
-                continue
-
-            total += 1
-            if pred_answer == gt_answer:
-                correct += 1
-
-        return {"accuracy": float(correct / total) if total > 0 else 0.0}
-
-    return compute_metrics
-
-
-def preprocess_logits_for_metrics(logits, labels):
-    # Keep only token IDs so Trainer does not gather full-vocab logits in eval.
-    if isinstance(logits, tuple):
-        logits = logits[0]
-    return logits.argmax(dim=-1)
+def get_image_preprocessing_config(args: argparse.Namespace) -> ImagePreprocessingConfig:
+    return ImagePreprocessingConfig(
+        resize_images=not args.no_resize_images,
+        max_image_long_side=args.max_image_long_side,
+        max_image_pixels=args.max_image_pixels,
+    )
 
 
 def main():
+    args = parse_args()
+
+
+    image_config = get_image_preprocessing_config(args)
+
     print("Loading model...")
-    model_id = "unsloth/Qwen3-VL-8B-Instruct" # Using Qwen3 as requested
-    
     model, tokenizer = FastVisionModel.from_pretrained(
-        model_id,
+        args.model_id_or_path,
         use_gradient_checkpointing = "unsloth",
     )
     
@@ -105,7 +121,7 @@ def main():
         model,
         r = 16,
         lora_alpha = 16,
-        lora_dropout = 0,
+        lora_dropout = 0.05,
         bias = "none",
         random_state = 3407,
         use_rslora = False,
@@ -142,36 +158,39 @@ def main():
     train_dataset = concatenate_datasets(subsets).shuffle(seed=3407)
     print(f"Total training records: {len(train_dataset)}")
 
-    # Load validation split
-    val_dataset = load_dataset("MBZUAI/EXAMS-V", split="validation")
-
     print("Formatting dataset...")
-    formatted_dataset = train_dataset.map(format_data, batched=True, num_proc=num_proc)
-    formatted_val_dataset = val_dataset.map(format_data, batched=True, num_proc=num_proc)
+    if image_config.resize_images:
+        print(
+            "Image preprocessing: resize enabled "
+            f"(longest_side<={image_config.max_image_long_side}, "
+            f"pixels<={image_config.max_image_pixels})"
+        )
+    else:
+        print("Image preprocessing: resize disabled")
+    formatted_dataset = train_dataset.map(
+        partial(format_data, image_config=image_config),
+        batched=True,
+        num_proc=num_proc,
+    )
     
     print("Setting up trainer...")
     training_args = TrainingArguments(
         output_dir = "./outputs",
         per_device_train_batch_size = 8,
-        per_device_eval_batch_size = 16,
-        eval_accumulation_steps = 1,
         gradient_accumulation_steps = 1, 
-        warmup_ratio = 0.1, 
-        num_train_epochs = 5,
-        # learning_rate = 5e-5, # Original learning rate
-        learning_rate = 1e-4,
+        warmup_ratio = 0.2, 
+        num_train_epochs = 2,
+        learning_rate = 2e-5,
         fp16 = not is_bfloat16_supported(),
         bf16 = is_bfloat16_supported(),
         logging_steps = 1, 
         optim = "adamw_torch",
         seed = 3407,
         run_name = f"Qwen3-VL-8B-Instruct-{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}",
-        metric_for_best_model = "eval_accuracy",
         save_strategy = "epoch", 
-        eval_strategy = "epoch", 
+        eval_strategy = "no",
         report_to = "wandb",
         remove_unused_columns = False,
-        eval_on_start=True,
         average_tokens_across_devices = False,
         dataloader_num_workers = 4,
         dataloader_pin_memory = True,
@@ -181,23 +200,21 @@ def main():
     trainer = SFTTrainer(
         model = model,
         tokenizer = tokenizer,
-        data_collator = UnslothVisionDataCollator(model, tokenizer, resize=512),
+        data_collator = UnslothVisionDataCollator(model, tokenizer),
         train_dataset = formatted_dataset,
-        eval_dataset = formatted_val_dataset,
-        compute_metrics = build_compute_metrics(tokenizer),
-        preprocess_logits_for_metrics = preprocess_logits_for_metrics,
         max_seq_length = 512,
         dataset_num_proc = 4,
         args = training_args,
     )
-    
+
     print("Starting training...")
     trainer.train()
     
     print("Saving model...")
-    model.save_pretrained("qwen3_8b_lora_model")
-    tokenizer.save_pretrained("qwen3_8b_lora_model")
+    model.save_pretrained(args.output_model_path)
+    tokenizer.save_pretrained(args.output_model_path)
     print("Done.")
+
 
 if __name__ == "__main__":
     main()
