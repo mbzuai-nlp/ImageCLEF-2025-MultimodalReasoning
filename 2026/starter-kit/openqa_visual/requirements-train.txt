@@ -1,0 +1,15 @@
+unsloth
+torch
+transformers==4.57.1
+trl==0.22.2
+datasets
+accelerate
+peft
+scipy
+bitsandbytes
+wandb
+python-dotenv
+unbabel-comet
+sacrebleu
+rouge-score
+nltk
