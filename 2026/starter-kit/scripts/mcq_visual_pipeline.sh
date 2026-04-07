@@ -19,10 +19,9 @@ SFT_MODEL_FILEPATH="$PROJECT_ROOT/unsloth_models/Qwen3-VL-8B-Instruct-mcq-Visual
 MERGED_MODEL_FILEPATH="$PROJECT_ROOT/unsloth_models/Qwen3-VL-8B-Instruct-mcq-Visual-SFT-merged"
 PREDICTIONS_DIR="$PROJECT_ROOT/predictions"
 LOG_DIR="$PROJECT_ROOT/logs"
+GROUNDTRUTH_FILE="mcq_visual_groundtruth.json"
 PRETRAIN_PREDICTIONS_FILE="mcq_visual_pretrain_predictions.json"
-PRETRAIN_GOLD_FILE="mcq_visual_pretrain_gold.json"
 POSTTRAIN_PREDICTIONS_FILE="mcq_visual_posttrain_predictions.json"
-POSTTRAIN_GOLD_FILE="mcq_visual_posttrain_gold.json"
 MCQ_EVAL_SPLIT="validation"
 
 mkdir -p "$PREDICTIONS_DIR" "$LOG_DIR"
@@ -78,34 +77,34 @@ mkdir -p "$(dirname "$DATASET_FILEPATH")"
 "$TRAIN_VENV_DIR/bin/hf" download --repo-type dataset "$DATASET_NAME" --local-dir "$DATASET_FILEPATH"
 
 # 4. Inference Before Training
-# echo -e "${GREEN}[4/6] Running inference before training...${NC}"
-# source $SGLANG_VENV_DIR/bin/activate
+echo -e "${GREEN}[4/6] Running inference before training...${NC}"
+source $SGLANG_VENV_DIR/bin/activate
 
-# start_sglang_server \
-#     "$HF_MODEL_FILEPATH" \
-#     "$SGLANG_MODEL_NAME" \
-#     "$LOG_DIR/sglang-pretrain.log"
+start_sglang_server \
+    "$HF_MODEL_FILEPATH" \
+    "$SGLANG_MODEL_NAME" \
+    "$LOG_DIR/sglang-pretrain.log"
 
-# python3 mcq_visual/inference.py \
-#     --model-id-or-path "$SGLANG_MODEL_NAME" \
-#     --dataset "$DATASET_FILEPATH" \
-#     --api-base "$SGLANG_API_BASE" \
-#     --max-image-long-side 2048 \
-#     --max-image-pixels 2000000 \
-#     --jpeg-quality 90 \
-#     --output-dir "$PREDICTIONS_DIR" \
-#     --output-name "$PRETRAIN_PREDICTIONS_FILE"
+python3 mcq_visual/inference.py \
+    --model-id-or-path "$SGLANG_MODEL_NAME" \
+    --dataset "$DATASET_FILEPATH" \
+    --api-base "$SGLANG_API_BASE" \
+    --max-image-long-side 2048 \
+    --max-image-pixels 2000000 \
+    --jpeg-quality 90 \
+    --output-dir "$PREDICTIONS_DIR" \
+    --output-name "$PRETRAIN_PREDICTIONS_FILE"
 
-# echo -e "${GREEN}Generating pre-train MCQ gold file...${NC}"
-# python3 "$PROJECT_ROOT/evaluation/generate_mcq_gold.py" \
-#         --dataset "$DATASET_FILEPATH" \
-#         --split "$MCQ_EVAL_SPLIT" \
-#         --output-file "$PREDICTIONS_DIR/$PRETRAIN_GOLD_FILE"
+echo -e "${GREEN}Generating pre-train MCQ gold file...${NC}"
+python3 "$PROJECT_ROOT/evaluation/generate_mcq_gold.py" \
+        --dataset "$DATASET_FILEPATH" \
+        --split "$MCQ_EVAL_SPLIT" \
+        --output-file "$PREDICTIONS_DIR/$GROUNDTRUTH_FILE"
 
 echo -e "${GREEN}Pre-train MCQ evaluation:${NC}"
 python3 evaluation/evaluate_mcq.py \
     --pred_file "$PREDICTIONS_DIR/$PRETRAIN_PREDICTIONS_FILE" \
-    --gold_file "$PREDICTIONS_DIR/$PRETRAIN_GOLD_FILE" \
+    --gold_file "$PREDICTIONS_DIR/$GROUNDTRUTH_FILE" \
     --print_score True
 
 cleanup_sglang_server
@@ -171,7 +170,7 @@ python3 mcq_visual/inference.py \
 echo -e "${GREEN}Post-train MCQ evaluation:${NC}"
 python3 evaluation/evaluate_mcq.py \
     --pred_file "$PREDICTIONS_DIR/$POSTTRAIN_PREDICTIONS_FILE" \
-    --gold_file "$PREDICTIONS_DIR/$PRETRAIN_GOLD_FILE" \
+    --gold_file "$PREDICTIONS_DIR/$GROUNDTRUTH_FILE" \
     --print_score True
 
 cleanup_sglang_server
