@@ -30,7 +30,7 @@ The model must choose exactly one option from the predefined choices.
 The submission file **MUST** follow this JSON format:
 
 - `id`: Unique identifier (matching a sample from the Test set)
-- `prediction`: Predicted answer label — one of `"A"`, `"B"`, `"C"`, `"D"`, or `"E"`
+- `answer_key`: Predicted answer label — one of `"A"`, `"B"`, `"C"`, `"D"`, or `"E"`
 
 #### 🔒 Rules
 
@@ -45,11 +45,11 @@ The submission file **MUST** follow this JSON format:
 [
   {
     "id": "5e9sf6b9-3338-4e97-ba6b-762e24a07e69",
-    "prediction": "A"
+    "answer_key": "A"
   },
   {
     "id": "08fjguy8-4e97-12s4-bt65-385f09dsk5df",
-    "prediction": "C"
+    "answer_key": "C"
   }
 ]
 ```
@@ -73,14 +73,14 @@ Unlike MCQ, there are no fixed answer choices — the model must generate the co
 The submission file MUST follow this JSON format:
 
 - `id`: Unique identifier (matching a sample from the Test set)
-- `prediction`: Generated textual answer
+- `answers`: List of generated answers (1 or more, depending on the question requirements)
 - `language`: Question language
 
 ### 🔒 Rules
 
 - Submission size MUST match the Test set size.
 - No duplicate IDs.
-- The `prediction` field must contain only the generated answer (no explanations unless explicitly allowed in official guidelines).
+- The `answers` field must contain only the list of generated answers (no explanations unless explicitly allowed in official guidelines).
 - File must be valid JSON.
 
 ### ✅ Example (OpenQA)
@@ -89,12 +89,17 @@ The submission file MUST follow this JSON format:
 [
   {
     "id": "3ac9d21e-1ab3-4f21-92fa-1f2390abc123",
-    "prediction": "Photosynthesis",
+    "answers": [
+      "Photosynthesis"
+    ]
     "language": "English"
   },
   {
     "id": "9fd21c44-77d2-4cdd-81d3-812fbc991111",
-    "prediction": "42",
+    "answers": [
+      "42",
+      "$\frac{3}{5}$"
+    ]
     "language": "English"
   }
 ]
