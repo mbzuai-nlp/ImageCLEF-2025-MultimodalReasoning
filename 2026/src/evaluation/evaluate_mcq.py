@@ -3,7 +3,7 @@ import argparse
 from inspect import signature
 
 ID_FIELD_NAME = "id"
-PRED_ANSWER_FIELD_NAME = "prediction"
+PRED_ANSWER_FIELD_NAME = "answer_key"
 GOLD_ANSWER_FIELD_NAME = "answer"
 
 
