@@ -78,7 +78,7 @@ The submission file MUST follow this JSON format:
 
 ### 🔒 Rules
 
-- Submission size MUST match the Test set size.
+- Submission size MUST match the Test set size. If you want to only submit for a single language, then leave questions in other language with emtpy answers - `"answers": [""]`
 - No duplicate IDs.
 - The `answers` field must contain only the list of generated answers (no explanations unless explicitly allowed in official guidelines).
 - File must be valid JSON.
