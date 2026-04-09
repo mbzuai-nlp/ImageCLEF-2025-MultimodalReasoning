@@ -36,7 +36,7 @@ The submission file **MUST** follow this JSON format:
 
 - Submission size **MUST match** the Test set size.
 - No duplicate IDs.
-- `prediction` must be **EXACTLY ONE** of `"A"`, `"B"`, `"C"`, `"D"`, or `"E"`.
+- `answer_key` must be **EXACTLY ONE** of `"A"`, `"B"`, `"C"`, `"D"`, or `"E"`.
 - File must be valid JSON.
 
 #### ✅ Example (MCQ)
