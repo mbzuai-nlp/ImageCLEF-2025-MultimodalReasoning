@@ -88,14 +88,14 @@ The submission file MUST follow this JSON format:
 ```json
 [
   {
-    "id": "3ac9d21e-1ab3-4f21-92fa-1f2390abc123",
+    "question_id": "3ac9d21e-1ab3-4f21-92fa-1f2390abc123",
     "answers": [
       "Photosynthesis"
     ]
     "language": "English"
   },
   {
-    "id": "9fd21c44-77d2-4cdd-81d3-812fbc991111",
+    "question_id": "9fd21c44-77d2-4cdd-81d3-812fbc991111",
     "answers": [
       "42",
       "$\frac{3}{5}$"
@@ -122,7 +122,7 @@ python src/evaluation/evaluate_mcq.py \
 
 **Expected fields in both files:**
 
-- `id`
+- `question_id`
 - `answer_key` (must be one of `A`, `B`, `C`, `D`, `E`)
 
 **What it checks before scoring:**
@@ -162,8 +162,8 @@ python src/evaluation/evaluate_qa.py \
 
 **Expected fields:**
 
-- Gold file: `id`, `question`, `answer` (`image_id` is optional)
-- Prediction file: `id`, `prediction`
+- Gold file: `question_id`, `question`, `answer` (`image_id` is optional)
+- Prediction file: `question_id`, `answers`
 
 The script computes and reports task-level averages for:
 
