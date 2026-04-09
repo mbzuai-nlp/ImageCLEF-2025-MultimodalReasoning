@@ -29,7 +29,7 @@ The model must choose exactly one option from the predefined choices.
 
 The submission file **MUST** follow this JSON format:
 
-- `id`: Unique identifier (matching a sample from the Test set)
+- `question_id`: Unique identifier (matching a sample from the Test set)
 - `answer_key`: Predicted answer label — one of `"A"`, `"B"`, `"C"`, `"D"`, or `"E"`
 
 #### 🔒 Rules
