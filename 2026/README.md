@@ -44,11 +44,11 @@ The submission file **MUST** follow this JSON format:
 ```json
 [
   {
-    "id": "5e9sf6b9-3338-4e97-ba6b-762e24a07e69",
+    "question_id": "5e9sf6b9-3338-4e97-ba6b-762e24a07e69",
     "answer_key": "A"
   },
   {
-    "id": "08fjguy8-4e97-12s4-bt65-385f09dsk5df",
+    "question_id": "08fjguy8-4e97-12s4-bt65-385f09dsk5df",
     "answer_key": "C"
   }
 ]
