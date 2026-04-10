@@ -1,4 +1,5 @@
-import unsloth
+import argparse
+import multiprocessing
 from transformers import TrainingArguments
 from unsloth import (
     FastVisionModel,
@@ -7,32 +8,33 @@ from unsloth import (
 )
 from unsloth.trainer import SFTTrainer
 
-import argparse
 from datetime import datetime
 from functools import partial
 from pathlib import Path
 
 try:
+    from .dataset_utils import get_batched_item_ids, import_hf_datasets_module, load_dataset_split
     from .image_utils import ImagePreprocessingConfig, resize_image_if_needed
+    from .question_utils import build_answer_prompt, get_extracted_question, load_extracted_question_map
 except ImportError:
+    from dataset_utils import get_batched_item_ids, import_hf_datasets_module, load_dataset_split
     from image_utils import ImagePreprocessingConfig, resize_image_if_needed
+    from question_utils import build_answer_prompt, get_extracted_question, load_extracted_question_map
 
 
 DEFAULT_DATASET = "SU-FMI-AI/ImageCLEF-MR2026-OpenQA-Visual"
 
 
-QUESTION = "\n".join(
-    (
-        "The image contains an examination question.",
-        "Anlayse the image and provide a concise answer to the question.",
-        "Answer only with the final answer, without any explanation or reasoning steps."
-    )
-)
-
-
-def format_data(examples, image_config: ImagePreprocessingConfig):
+def format_data(
+    examples,
+    image_config: ImagePreprocessingConfig,
+    question_map: dict[tuple[str, str], str],
+):
     all_messages = []
-    for image, answer in zip(
+    item_ids = get_batched_item_ids(examples)
+
+    for item_id, image, answer in zip(
+        item_ids,
         examples["image"],
         examples["answer"],
     ):
@@ -42,7 +44,12 @@ def format_data(examples, image_config: ImagePreprocessingConfig):
                 "role": "user",
                 "content": [
                     {"type": "image", "image": processed_image},
-                    {"type": "text", "text": QUESTION},
+                    {
+                        "type": "text",
+                        "text": build_answer_prompt(
+                            get_extracted_question(question_map, item_id, split="train")
+                        ),
+                    },
                 ],
             },
             {
@@ -70,6 +77,12 @@ def parse_args() -> argparse.Namespace:
         type=str,
         default="unsloth/Qwen3-VL-8B-Instruct",
         help="HF model ID or local model path used as the training base model.",
+    )
+    parser.add_argument(
+        "--question-file",
+        type=Path,
+        required=True,
+        help="JSONL file containing extracted questions keyed by dataset id.",
     )
     parser.add_argument(
         "--output-model-path",
@@ -112,11 +125,11 @@ def get_image_preprocessing_config(args: argparse.Namespace) -> ImagePreprocessi
 
 
 def sample_training_dataset(full_train_dataset):
-    from datasets import concatenate_datasets
-
     from collections import defaultdict
     import random
 
+    datasets_module = import_hf_datasets_module()
+    concatenate_datasets = datasets_module.concatenate_datasets
     rng = random.Random(3407)
     lang_to_indices = defaultdict(list)
     for idx, lang in enumerate(full_train_dataset["language"]):
@@ -136,41 +149,37 @@ def sample_training_dataset(full_train_dataset):
 
 
 def load_training_split(dataset_name_or_path: str):
-    from datasets import load_dataset
-
-    dataset_path = Path(dataset_name_or_path)
-    if dataset_path.exists():
-        parquet_files = sorted((dataset_path / "data").glob("train-*.parquet"))
-        if parquet_files:
-            return load_dataset(
-                "parquet",
-                data_files=[str(path) for path in parquet_files],
-                split="train",
-            )
-
-    return load_dataset(dataset_name_or_path, split="train")
+    return load_dataset_split(dataset_name_or_path, split="train", streaming=False)
 
 
 def main():
 
     args = parse_args()
     image_config = get_image_preprocessing_config(args)
+    question_map = load_extracted_question_map(args.question_file)
 
     print("Loading model...")
-    model, tokenizer = FastModel.from_pretrained(
-        max_seq_length = 2048,
-        load_in_4bit = False,     # MoE QLoRA not recommended, dense 27B is fine
-        load_in_16bit = True,     # bf16/16-bit LoRA
-        full_finetuning = False,
+    model, tokenizer = FastVisionModel.from_pretrained(
+        args.model_id_or_path,
+        use_gradient_checkpointing="unsloth",
+    )
+    model = FastVisionModel.get_peft_model(
+        model,
+        r=16,
+        lora_alpha=16,
+        lora_dropout=0.05,
+        bias="none",
+        random_state=3407,
+        use_rslora=False,
+        loftq_config=None,
     )
 
     print(f"Loading dataset from {args.dataset}...")
-    import multiprocessing
-
     num_proc = min(multiprocessing.cpu_count(), 32)
     full_train_dataset = load_training_split(args.dataset)
     train_dataset = sample_training_dataset(full_train_dataset)
     print(f"Total training records: {len(train_dataset)}")
+    print(f"Loaded {len(question_map)} extracted questions from {args.question_file}.")
 
     print("Formatting dataset...")
     if image_config.resize_images:
@@ -183,7 +192,7 @@ def main():
         print("Image preprocessing: resize disabled")
 
     formatted_dataset = train_dataset.map(
-        partial(format_data, image_config=image_config),
+        partial(format_data, image_config=image_config, question_map=question_map),
         batched=True,
         num_proc=num_proc,
     )
@@ -193,8 +202,8 @@ def main():
         output_dir="./outputs",
         per_device_train_batch_size=4,
         gradient_accumulation_steps=1,
-        warmup_ratio=0.1,
-        num_train_epochs=1,
+        warmup_ratio=0.2,
+        num_train_epochs=4,
         learning_rate=2e-5,
         fp16=not is_bfloat16_supported(),
         bf16=is_bfloat16_supported(),
@@ -226,9 +235,9 @@ def main():
     trainer.train()
 
     print("Saving model...")
-    # model.save_pretrained(args.output_model_path)
-    # tokenizer.save_pretrained(args.output_model_path)
-    model.save_pretrained_merged(args.output_model_path, tokenizer, save_method = "lora")
+    model.save_pretrained(args.output_model_path)
+    tokenizer.save_pretrained(args.output_model_path)
+    # model.save_pretrained_merged(args.output_model_path, tokenizer, save_method = "lora")
 
     print("Done.")
 

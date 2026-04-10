@@ -12,29 +12,24 @@ from urllib import error, request
 from tqdm.auto import tqdm
 
 try:
+    from .dataset_utils import load_dataset_split, resolve_item_id
     from .image_utils import (
         ImagePreprocessingConfig,
         encode_image_data_url,
         resize_image_if_needed,
     )
+    from .question_utils import build_answer_prompt, get_extracted_question, load_extracted_question_map
 except ImportError:
+    from dataset_utils import load_dataset_split, resolve_item_id
     from image_utils import (
         ImagePreprocessingConfig,
         encode_image_data_url,
         resize_image_if_needed,
     )
+    from question_utils import build_answer_prompt, get_extracted_question, load_extracted_question_map
 
 
 DEFAULT_DATASET = "SU-FMI-AI/ImageCLEF-MR2026-OpenQA-Visual"
-
-QUESTION = "\n".join(
-    (
-        "The image contains an examination question. Your task is to retrieve and answer the question in the image.",
-        "Perform the following steps:",
-        "1. Provide the question found within the image.",
-        "2. Provide a concise answer to the question, without any explanation or reasoning steps.",
-    )
-)
 
 
 @dataclass(frozen=True)
@@ -61,7 +56,8 @@ def positive_int(value: str) -> int:
 
 
 def sanitize_generated_answer(text: str) -> str:
-    return re.sub(r"\s+", " ", str(text)).strip()
+    cleaned = re.sub(r"^\s*answer\s*:\s*", "", str(text), flags=re.IGNORECASE)
+    return re.sub(r"\s+", " ", cleaned).strip()
 
 
 def sanitize_filename(value: str) -> str:
@@ -100,7 +96,8 @@ def extract_message_text(payload: dict) -> str:
 
 def build_payload(
     config: InferenceConfig,
-    image_data_url: str
+    image_data_url: str,
+    prompt_text: str,
 ) -> dict[str, Any]:
     return {
         "model": config.model_id_or_path,
@@ -109,7 +106,7 @@ def build_payload(
                 "role": "user",
                 "content": [
                     {"type": "image_url", "image_url": {"url": image_data_url}},
-                    {"type": "text", "text": QUESTION},
+                    {"type": "text", "text": prompt_text},
                 ],
             }
         ],
@@ -163,19 +160,24 @@ def infer_example(
     index: int,
     example: dict[str, Any],
     config: InferenceConfig,
+    question_map: dict[tuple[str, str], str],
+    split: str,
 ) -> dict[str, Any]:
-    item_id = example["question_id"]
+    item_id = resolve_item_id(example)
+    extracted_question = get_extracted_question(question_map, item_id, split)
     image_config = get_image_preprocessing_config(config)
     processed_image = resize_image_if_needed(example["image"], image_config)
     payload = build_payload(
         config,
-        encode_image_data_url(processed_image, image_config)
+        encode_image_data_url(processed_image, image_config),
+        build_answer_prompt(extracted_question),
     )
     response_text = request_prediction(item_id=item_id, payload=payload, config=config)
     result = {
         "index": index,
         "id": item_id,
         "language": example["language"],
+        "question": extracted_question,
         "prediction": sanitize_generated_answer(response_text),
         "response_text": response_text,
     }
@@ -200,13 +202,15 @@ def submit_next_example(
     example_iter: Iterator[tuple[int, dict[str, Any]]],
     futures: dict[Future[dict[str, Any]], int],
     config: InferenceConfig,
+    question_map: dict[tuple[str, str], str],
+    split: str,
 ) -> bool:
     try:
         index, example = next(example_iter)
     except StopIteration:
         return False
 
-    future = executor.submit(infer_example, index, example, config)
+    future = executor.submit(infer_example, index, example, config, question_map, split)
     futures[future] = index
     return True
 
@@ -215,6 +219,7 @@ def run_parallel_inference(
     dataset,
     config: InferenceConfig,
     split: str,
+    question_map: dict[tuple[str, str], str],
 ) -> list[dict[str, Any]]:
     results: list[dict[str, Any]] = []
     futures: dict[Future[dict[str, Any]], int] = {}
@@ -223,7 +228,7 @@ def run_parallel_inference(
 
     with ThreadPoolExecutor(max_workers=config.max_concurrent_requests) as executor:
         for _ in range(config.max_concurrent_requests):
-            if not submit_next_example(executor, example_iter, futures, config):
+            if not submit_next_example(executor, example_iter, futures, config, question_map, split):
                 break
 
         with tqdm(total=total_examples, desc="Inference", unit="example") as progress:
@@ -233,7 +238,7 @@ def run_parallel_inference(
                     futures.pop(future, None)
                     results.append(future.result())
                     progress.update(1)
-                    submit_next_example(executor, example_iter, futures, config)
+                    submit_next_example(executor, example_iter, futures, config, question_map, split)
 
     results.sort(key=lambda row: row["index"])
     return results
@@ -248,27 +253,9 @@ def print_preview(results: list[dict[str, Any]]) -> None:
 
 def build_prediction_row(row: dict[str, Any]) -> dict[str, Any]:
     return {
-        "id": row["id"],
-        "prediction": row["prediction"],
-        "language": row["language"]
+        "question_id": row["id"],
+        "answers": [row["prediction"]]
     }
-
-
-def load_inference_split(dataset_name_or_path: str, split: str):
-    from datasets import load_dataset
-
-    dataset_path = Path(dataset_name_or_path)
-    if dataset_path.exists():
-        parquet_files = sorted((dataset_path / "data").glob(f"{split}-*.parquet"))
-        if parquet_files:
-            return load_dataset(
-                "parquet",
-                data_files=[str(path) for path in parquet_files],
-                split="train",
-                streaming=True,
-            )
-
-    return load_dataset(dataset_name_or_path, split=split, streaming=True)
 
 
 def parse_args() -> argparse.Namespace:
@@ -286,8 +273,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--split",
         type=str,
-        default="validation",
+        default="dev",
         help="Dataset split to evaluate.",
+    )
+    parser.add_argument(
+        "--question-file",
+        type=Path,
+        required=True,
+        help="JSONL file containing extracted questions keyed by dataset id.",
     )
     parser.add_argument(
         "--model-id-or-path",
@@ -398,7 +391,9 @@ def main() -> None:
     )
 
     print(f"Loading {args.split} dataset from {args.dataset}...")
-    dataset = load_inference_split(args.dataset, args.split)
+    dataset = load_dataset_split(args.dataset, split=args.split, streaming=True)
+    question_map = load_extracted_question_map(args.question_file)
+    print(f"Loaded {len(question_map)} extracted questions from {args.question_file}.")
     if config.resize_images:
         print(
             "Image preprocessing: resize enabled "
@@ -421,6 +416,7 @@ def main() -> None:
         dataset,
         config=config,
         split=args.split,
+        question_map=question_map,
     )
     print_preview(results)
 
