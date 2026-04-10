@@ -165,9 +165,8 @@ def main():
     )
     model = FastVisionModel.get_peft_model(
         model,
-        r=16,
-        lora_alpha=16,
-        lora_dropout=0.05,
+        r=32,
+        lora_alpha=32,
         bias="none",
         random_state=3407,
         use_rslora=False,
@@ -202,8 +201,8 @@ def main():
         output_dir="./outputs",
         per_device_train_batch_size=4,
         gradient_accumulation_steps=1,
-        warmup_ratio=0.2,
-        num_train_epochs=4,
+        warmup_ratio=0.1,
+        num_train_epochs=2,
         learning_rate=2e-5,
         fp16=not is_bfloat16_supported(),
         bf16=is_bfloat16_supported(),
