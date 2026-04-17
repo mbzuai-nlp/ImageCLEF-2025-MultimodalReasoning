@@ -27,6 +27,8 @@ OPENQA_EVAL_SPLIT="dev"
 
 mkdir -p "$PREDICTIONS_DIR" "$LOG_DIR"
 
+ln -s ../src/evaluation/ ./
+
 source "$PROJECT_ROOT/scripts/sglang_utils.sh"
 
 # Colors for output

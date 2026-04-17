@@ -11,20 +11,22 @@ PYTHON_VERSION="3.11"
 MODEL_ID="unsloth/Qwen3.5-9B-GGUF"
 DATASET_NAME="MBZUAI/EXAMS-V"
 
-TRAIN_REQUIREMENTS_FILE="$PROJECT_ROOT/mcq_visual/requirements-train.txt"
-SGLANG_REQUIREMENTS_FILE="$PROJECT_ROOT/mcq_visual/requirements-sglang.txt"
+TRAIN_REQUIREMENTS_FILE="$PROJECT_ROOT/mcq/requirements-train.txt"
+SGLANG_REQUIREMENTS_FILE="$PROJECT_ROOT/mcq/requirements-sglang.txt"
 DATASET_FILEPATH="$PROJECT_ROOT/datasets/EXAMS-V"
 HF_MODEL_FILEPATH="$PROJECT_ROOT/unsloth_models/Qwen3.5-9B-GGUF"
 SFT_MODEL_FILEPATH="$PROJECT_ROOT/unsloth_models/Qwen3.5-9B-GGUF-mcq-Visual-SFT"
 MERGED_MODEL_FILEPATH="$PROJECT_ROOT/unsloth_models/Qwen3.5-9B-GGUF-mcq-Visual-SFT-merged"
 PREDICTIONS_DIR="$PROJECT_ROOT/predictions"
 LOG_DIR="$PROJECT_ROOT/logs"
-GROUNDTRUTH_FILE="mcq_visual_groundtruth.json"
-PRETRAIN_PREDICTIONS_FILE="mcq_visual_pretrain_predictions.json"
-POSTTRAIN_PREDICTIONS_FILE="mcq_visual_posttrain_predictions.json"
+GROUNDTRUTH_FILE="mcq_groundtruth.json"
+PRETRAIN_PREDICTIONS_FILE="mcq_pretrain_predictions.json"
+POSTTRAIN_PREDICTIONS_FILE="mcq_posttrain_predictions.json"
 MCQ_EVAL_SPLIT="validation"
 
 mkdir -p "$PREDICTIONS_DIR" "$LOG_DIR"
+
+ln -s ../src/evaluation/ ./
 
 source "$PROJECT_ROOT/scripts/sglang_utils.sh"
 
@@ -85,7 +87,7 @@ start_sglang_server \
     "$SGLANG_MODEL_NAME" \
     "$LOG_DIR/sglang-pretrain.log"
 
-python3 mcq_visual/inference.py \
+python3 mcq/inference.py \
     --model-id-or-path "$SGLANG_MODEL_NAME" \
     --dataset "$DATASET_FILEPATH" \
     --api-base "$SGLANG_API_BASE" \
@@ -96,7 +98,7 @@ python3 mcq_visual/inference.py \
     --output-name "$PRETRAIN_PREDICTIONS_FILE"
 
 echo -e "${GREEN}Generating pre-train MCQ gold file...${NC}"
-python3 "$PROJECT_ROOT/evaluation/generate_mcq_gold.py" \
+python3 mcq/generate_mcq_gold.py \
         --dataset "$DATASET_FILEPATH" \
         --split "$MCQ_EVAL_SPLIT" \
         --output-file "$PREDICTIONS_DIR/$GROUNDTRUTH_FILE"
@@ -130,7 +132,7 @@ fi
 # We assume resources are allocated (e.g., via srun) as per user instruction.
 echo "Running training script using torchrun from the training environment..."
 NUM_GPUS=4
-"$TRAIN_TORCHRUN" --nproc_per_node=$NUM_GPUS mcq_visual/train.py \
+"$TRAIN_TORCHRUN" --nproc_per_node=$NUM_GPUS mcq/train.py \
     --model-id-or-path "$HF_MODEL_FILEPATH" \
     --output-model-path "$SFT_MODEL_FILEPATH"
 
@@ -145,7 +147,7 @@ if [ ! -f "$MERGED_MODEL_FILEPATH/config.json" ] || \
    [ "$SFT_MODEL_FILEPATH/adapter_model.safetensors" -nt "$MERGED_MODEL_FILEPATH/config.json" ] || \
    [ "$SFT_MODEL_FILEPATH/adapter_config.json" -nt "$MERGED_MODEL_FILEPATH/config.json" ]; then
     echo "Merging adapter into base model for SGLang-compatible inference..."
-    python3 mcq_visual/merge_adapter.py \
+    python3 mcq/merge_adapter.py \
         --base-model-path "$HF_MODEL_FILEPATH" \
         --adapter-model-path "$SFT_MODEL_FILEPATH" \
         --output-model-path "$MERGED_MODEL_FILEPATH"
@@ -160,7 +162,7 @@ start_sglang_server \
     "$SGLANG_MODEL_NAME" \
     "$LOG_DIR/sglang-posttrain.log"
 
-python3 mcq_visual/inference.py \
+python3 mcq/inference.py \
     --model-id-or-path "$SGLANG_MODEL_NAME" \
     --dataset "$DATASET_FILEPATH" \
     --api-base "$SGLANG_API_BASE" \
