@@ -1,142 +1,142 @@
 [
   {
-    "id": 1,
+    "question_id": 1,
     "image_id": "img_84729",
     "question": "State and derive the quadratic formula for ax^2 + bx + c = 0.",
-    "prediction": "The quadratic formula is x = (-b ± sqrt(b^2 - 4ac)) / (2a), derived by completing the square.",
+    "answers": "The quadratic formula is x = (-b ± sqrt(b^2 - 4ac)) / (2a), derived by completing the square.",
     "language": "English"
   },
   {
-    "id": 2,
+    "question_id": 2,
     "image_id": "img_19375",
     "question": "What is the divergence of the vector field F = (x^2, y^2, z^2)?",
-    "prediction": "The divergence is 2x + 2y + 2z.",
+    "answers": "The divergence is 2x + 2y + 2z.",
     "language": "English"
   },
   {
-    "id": 3,
+    "question_id": 3,
     "image_id": "img_58201",
     "question": "State Newton’s second law in differential form.",
-    "prediction": "Newton’s second law is F = ma.",
+    "answers": "Newton’s second law is F = ma.",
     "language": "English"
   },
   {
-    "id": 4,
+    "question_id": 4,
     "image_id": "img_77462",
     "question": "Compute the derivative of f(x) = e^(3x).",
-    "prediction": "The derivative is e^(3x).",
-    "language": "English"
+    "answers": "The derivative is e^(3x).",
+    "language": "Chinese"
   },
   {
-    "id": 5,
+    "question_id": 5,
     "image_id": "img_66548",
     "question": "Write the Fourier series representation of a periodic function.",
-    "prediction": "It can be expressed as a sum of sine and cosine terms.",
+    "answers": "It can be expressed as a sum of sine and cosine terms.",
     "language": "English"
   },
   {
-    "id": 6,
+    "question_id": 6,
     "image_id": "img_90834",
     "question": "What is the integral of 1/x dx?",
-    "prediction": "The integral is ln|x| + constant.",
+    "answers": "The integral is ln|x| + constant.",
     "language": "English"
   },
   {
-    "id": 7,
+    "question_id": 7,
     "image_id": "img_12947",
     "question": "State Gauss’s law in integral form.",
-    "prediction": "Gauss law: electric flux equals charge divided by epsilon zero.",
-    "language": "English"
+    "answers": "Gauss law: electric flux equals charge divided by epsilon zero.",
+    "language": "Serbian"
   },
   {
-    "id": 8,
+    "question_id": 8,
     "image_id": "img_55678",
     "question": "Find the eigenvalues of a 2x2 identity matrix.",
-    "prediction": "The eigenvalues are both equal to 1.",
+    "answers": "The eigenvalues are both equal to 1.",
     "language": "English"
   },
   {
-    "id": 9,
+    "question_id": 9,
     "image_id": "img_33421",
     "question": "Write the time-independent Schrödinger equation.",
-    "prediction": "The time-independent Schrödinger equation is iħ∂ψ/∂t = Ĥψ.",
+    "answers": "The time-independent Schrödinger equation is iħ∂ψ/∂t = Ĥψ.",
     "language": "English"
   },
   {
-    "id": 10,
+    "question_id": 10,
     "image_id": "img_78102",
     "question": "Compute the Laplacian of φ = x^2 + y^2 + z^2.",
-    "prediction": "The Laplacian is 6.",
+    "answers": "The Laplacian is 6.",
     "language": "English"
   },
   {
-    "id": 11,
+    "question_id": 11,
     "image_id": "img_45019",
     "question": "State the binomial theorem.",
-    "prediction": "(a + b)^n equals the sum over k of n choose k times a^(n-k) b^k.",
+    "answers": "(a + b)^n equals the sum over k of n choose k times a^(n-k) b^k.",
     "language": "English"
   },
   {
-    "id": 12,
+    "question_id": 12,
     "image_id": "img_99213",
     "question": "What is the Taylor expansion of e^x around x = 0?",
-    "prediction": "e^x = 1 + x + x^2/2 + x^3/6 + higher order terms.",
+    "answers": "e^x = 1 + x + x^2/2 + x^3/6 + higher order terms.",
     "language": "English"
   },
   {
-    "id": 13,
+    "question_id": 13,
     "image_id": "img_67384",
     "question": "State Ohm’s law in differential form.",
-    "prediction": "Ohm’s law states V = IR.",
+    "answers": "Ohm’s law states V = IR.",
     "language": "English"
   },
   {
-    "id": 14,
+    "question_id": 14,
     "image_id": "img_28476",
     "question": "Find the limit of sin(x)/x as x approaches 0.",
-    "prediction": "The limit equals 1.",
+    "answers": "The limit equals 1.",
     "language": "English"
   },
   {
-    "id": 15,
+    "question_id": 15,
     "image_id": "img_71930",
     "question": "Write Maxwell’s equation for Faraday’s law in differential form.",
-    "prediction": "Curl of E equals minus the time derivative of B.",
+    "answers": "Curl of E equals minus the time derivative of B.",
     "language": "English"
   },
   {
-    "id": 16,
+    "question_id": 16,
     "image_id": "img_86420",
     "question": "Compute the determinant of a 2x2 matrix [[a, b], [c, d]].",
-    "prediction": "The determinant equals ad - bc.",
+    "answers": "The determinant equals ad - bc.",
     "language": "English"
   },
   {
-    "id": 17,
+    "question_id": 17,
     "image_id": "img_31058",
     "question": "State the conservation of energy principle.",
-    "prediction": "Energy is always conserved.",
+    "answers": "Energy is always conserved.",
     "language": "English"
   },
   {
-    "id": 18,
+    "question_id": 18,
     "image_id": "img_54389",
     "question": "Find the derivative of sin(x).",
-    "prediction": "The derivative of sin(x) is -cos(x).",
+    "answers": "The derivative of sin(x) is -cos(x).",
     "language": "English"
   },
   {
-    "id": 19,
+    "question_id": 19,
     "image_id": "img_11267",
     "question": "What is the expression for relativistic energy?",
-    "prediction": "Energy is given by E = mc^2.",
+    "answers": "Energy is given by E = mc^2.",
     "language": "English"
   },
   {
-    "id": 20,
+    "question_id": 20,
     "image_id": "img_99831",
     "question": "Write the formula for the area of a circle.",
-    "prediction": "The area is πr squared.",
+    "answers": "The area is πr squared.",
     "language": "English"
   }
 ]

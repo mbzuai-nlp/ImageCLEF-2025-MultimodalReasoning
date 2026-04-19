@@ -1,6 +1,6 @@
 [
-  { "id": 1, "prediction": "A", "language": "English" },
-  { "id": 2, "prediction": "B", "language": "English" },
+  { "id": 1, "prediction": "A", "language": "Chinese" },
+  { "id": 2, "prediction": "B", "language": "Croatian" },
   { "id": 3, "prediction": "C", "language": "English" },
   { "id": 4, "prediction": "B", "language": "English" },
   { "id": 5, "prediction": "E", "language": "English" },
@@ -17,6 +17,6 @@
   { "id": 16, "prediction": "C", "language": "English" },
   { "id": 17, "prediction": "B", "language": "English" },
   { "id": 18, "prediction": "C", "language": "English" },
-  { "id": 19, "prediction": "D", "language": "English" },
+  { "id": 19, "prediction": "D", "language": "Italian" },
   { "id": 20, "prediction": "A", "language": "English" }
 ]
