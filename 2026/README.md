@@ -7,6 +7,20 @@ This repository provides baseline implementations and supporting materials for t
 
 The baselines use Vision-Language Models (VLMs) in zero-shot or few-shot settings.
 
+# Submission Instructions
+
+- The submission must include a **JSON file** with predictions in the format described in the GitHub repository.
+- The JSON file must be **zipped** before submission.
+- The **ZIP and JSON filenames can be any name**.
+- Make sure there is **no more than one JSON file inside the ZIP**.
+- Please refer to the **Submission Format** sections below and ensure you follow all rules before your first submission.
+
+## **IMPORTANT: Evaluation Rules**
+
+- **Final results will NOT be visible on the leaderboard during the Test phase.**
+- **You will NOT receive any feedback until the end of the evaluation phase.**
+- **We will evaluate only the LAST successful submission for each team.**
+
 # 🏆 Competition Tasks
 
 ## 1️⃣ Multiple-Choice Question Answering (MCQ)
