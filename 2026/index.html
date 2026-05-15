@@ -512,6 +512,93 @@
         </div>
     </section>
 
+    <section id="results" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 class="text-3xl font-bold text-slate-900 mb-12">Competition results</h2>
+
+        <div class="space-y-10">
+
+            <!-- Visual MCQ -->
+            <div class="bg-slate-50 rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
+                <div class="px-8 py-5 border-b border-slate-200">
+                    <h3 class="text-lg font-semibold text-slate-900 mb-0.5">Visual MCQ — leaderboard</h3>
+                    <p class="text-slate-500 text-sm">Overall accuracy and per-language breakdown</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-200 bg-slate-100">
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider w-10">#</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Participant</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Overall</th>
+                                <th class="px-4 py-3 w-24"></th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">EN</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">BG</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">ZH</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">HR</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">IT</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider pr-6">SR</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mcq-visual-body" class="divide-y divide-slate-100 bg-white"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<script>
+(function () {
+    var visualMCQ = [
+        { rank: 1, name: "spirosbax",       overall: 0.8406, en: 0.8560, bg: 0.8909, zh: 0.7807, hr: 0.8772, it: 0.9074, sr: 0.8704 },
+        { rank: 2, name: "DS@GT",           overall: 0.7986, en: 0.8520, bg: 0.8636, zh: 0.6725, hr: 0.8596, it: 0.8704, sr: 0.8333 },
+        { rank: 3, name: "mohamedbasem",    overall: 0.7108, en: 0.7480, bg: 0.6909, zh: 0.6345, hr: 0.7368, it: 0.8148, sr: 0.7593 },
+        { rank: 4, name: "zhaijinghe",      overall: 0.6150, en: 0.6760, bg: 0.6182, zh: 0.5351, hr: 0.6140, it: 0.5926, sr: 0.5741 },
+        { rank: 5, name: "sjaini",          overall: 0.5927, en: 0.6920, bg: 0.5091, zh: 0.4415, hr: 0.5965, it: 0.7222, sr: 0.6667 },
+        { rank: 6, name: "begyed",          overall: 0.5774, en: 0.6000, bg: 0.6636, zh: 0.4708, hr: 0.6667, it: 0.7037, sr: 0.6481 },
+        { rank: 7, name: "linxiaocan",      overall: 0.5560, en: 0.6040, bg: 0.5455, zh: 0.5117, hr: 0.5088, it: 0.5926, sr: 0.4259 },
+        { rank: 8, name: "pratikpriyanshu", overall: 0.5076, en: 0.5720, bg: 0.4364, zh: 0.4181, hr: 0.5614, it: 0.5556, sr: 0.5185 },
+        { rank: 9, name: "wether",          overall: 0.4673, en: 0.5460, bg: 0.5636, zh: 0.3187, hr: 0.4561, it: 0.4815, sr: 0.4815 },
+    ];
+
+    var medalColors  = { 1: '#d97706', 2: '#64748b', 3: '#b45309' };
+    var medalBg      = { 1: '#fef3c7', 2: '#f1f5f9', 3: '#fde8c8' };
+    var maxOverall   = Math.max.apply(null, visualMCQ.map(function(d){ return d.overall; }));
+
+    function fmt(v) { return v.toFixed(4); }
+
+    function renderTable(data, tbodyId) {
+        var tbody = document.getElementById(tbodyId);
+        if (!tbody) return;
+        data.forEach(function(row) {
+            var barW = ((row.overall / maxOverall) * 100).toFixed(1);
+            var rankHtml = row.rank <= 3
+                ? '<span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:' + medalBg[row.rank] + ';color:' + medalColors[row.rank] + ';font-size:11px;font-weight:600">' + row.rank + '</span>'
+                : '<span style="font-size:12px;color:#94a3b8;font-weight:500">' + row.rank + '</span>';
+            var tr = document.createElement('tr');
+            tr.className = 'hover:bg-slate-50 transition-colors';
+            tr.innerHTML =
+                '<td class="px-6 py-3">' + rankHtml + '</td>' +
+                '<td class="px-6 py-3 font-medium text-slate-900">' + row.name + '</td>' +
+                '<td class="px-6 py-3 text-right font-medium text-slate-900 tabular-nums">' + fmt(row.overall) + '</td>' +
+                '<td class="px-4 py-3"><div style="height:4px;background:#e2e8f0;border-radius:2px;overflow:hidden"><div style="height:100%;width:' + barW + '%;background:#3b82f6;border-radius:2px"></div></div></td>' +
+                '<td class="px-4 py-3 text-right text-slate-600 tabular-nums">' + fmt(row.en) + '</td>' +
+                '<td class="px-4 py-3 text-right text-slate-600 tabular-nums">' + fmt(row.bg) + '</td>' +
+                '<td class="px-4 py-3 text-right text-slate-600 tabular-nums">' + fmt(row.zh) + '</td>' +
+                '<td class="px-4 py-3 text-right text-slate-600 tabular-nums">' + fmt(row.hr) + '</td>' +
+                '<td class="px-4 py-3 text-right text-slate-600 tabular-nums">' + fmt(row.it) + '</td>' +
+                '<td class="px-4 py-3 pr-6 text-right text-slate-600 tabular-nums">' + fmt(row.sr) + '</td>';
+            tbody.appendChild(tr);
+        });
+    }
+
+    renderTable(visualMCQ, 'mcq-visual-body');
+})();
+</script>
+
     <!-- Organizers -->
     <section class="py-20 bg-white border-t border-slate-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
