@@ -517,7 +517,7 @@
 
         <div class="space-y-10">
 
-            <!-- Visual MCQ -->
+            <!-- ── Table 1: Visual MCQ ── -->
             <div class="bg-slate-50 rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
                 <div class="px-8 py-5 border-b border-slate-200">
                     <h3 class="text-lg font-semibold text-slate-900 mb-0.5">Visual MCQ — leaderboard</h3>
@@ -544,57 +544,263 @@
                 </div>
             </div>
 
-        </div>
+            <!-- ── Table 2: Textual MCQ ── -->
+            <div class="bg-slate-50 rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
+                <div class="px-8 py-5 border-b border-slate-200">
+                    <h3 class="text-lg font-semibold text-slate-900 mb-0.5">Textual MCQ — leaderboard</h3>
+                    <p class="text-slate-500 text-sm">Overall accuracy and per-language breakdown</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-200 bg-slate-100">
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider w-10">#</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Participant</th>
+                                <th class="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">Overall</th>
+                                <th class="px-4 py-3 w-24"></th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">EN</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">BG</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">ZH</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">HR</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider pr-6">IT</th>
+                            </tr>
+                        </thead>
+                        <tbody id="mcq-textual-body" class="divide-y divide-slate-100 bg-white"></tbody>
+                    </table>
+                </div>
+            </div>
 
+            <!-- ── Table 3: Visual OpenQA ── -->
+            <div class="bg-slate-50 rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
+                <div class="px-8 py-5 border-b border-slate-200">
+                    <h3 class="text-lg font-semibold text-slate-900 mb-0.5">Visual OpenQA — leaderboard</h3>
+                    <p class="text-slate-500 text-sm">Generation quality metrics across languages · ranked by COMET overall</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-200 bg-slate-100">
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider w-10">#</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Team</th>
+                                <th class="px-5 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">COMET</th>
+                                <th class="px-3 py-3 w-20"></th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-400 uppercase tracking-wider" title="COMET — Bulgarian">BG</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-400 uppercase tracking-wider" title="COMET — Chinese">ZH</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-400 uppercase tracking-wider" title="COMET — Croatian">HR</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-400 uppercase tracking-wider" title="COMET — English">EN</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-400 uppercase tracking-wider" title="COMET — Italian">IT</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-400 uppercase tracking-wider" title="COMET — Serbian">SR</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">BLEU</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">ROUGE-L</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider pr-6">METEOR</th>
+                            </tr>
+                            <tr class="border-b border-slate-100 bg-slate-50">
+                                <th colspan="4"></th>
+                                <th colspan="6" class="px-4 py-1.5 text-center text-xs text-slate-400 font-normal border-x border-slate-200">COMET per language</th>
+                                <th colspan="3" class="px-4 py-1.5 text-center text-xs text-slate-400 font-normal pr-6">Surface metrics</th>
+                            </tr>
+                        </thead>
+                        <tbody id="openqa-visual-body" class="divide-y divide-slate-100 bg-white"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ── Table 4: Textual OpenQA — ADD YOUR DATA HERE ── -->
+            <div class="bg-slate-50 rounded-2xl overflow-hidden border border-slate-200 shadow-sm">
+                <div class="px-8 py-5 border-b border-slate-200">
+                    <h3 class="text-lg font-semibold text-slate-900 mb-0.5">Textual OpenQA — leaderboard</h3>
+                    <p class="text-slate-500 text-sm">Generation quality metrics across languages · ranked by COMET overall</p>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead>
+                            <tr class="border-b border-slate-200 bg-slate-100">
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider w-10">#</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Team</th>
+                                <th class="px-5 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">COMET</th>
+                                <th class="px-3 py-3 w-20"></th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-400 uppercase tracking-wider" title="COMET — Bulgarian">BG</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-400 uppercase tracking-wider" title="COMET — Chinese">ZH</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-400 uppercase tracking-wider" title="COMET — Croatian">HR</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-400 uppercase tracking-wider" title="COMET — English">EN</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-400 uppercase tracking-wider" title="COMET — Italian">IT</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-400 uppercase tracking-wider" title="COMET — Serbian">SR</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">BLEU</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">ROUGE-L</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider pr-6">METEOR</th>
+                            </tr>
+                            <tr class="border-b border-slate-100 bg-slate-50">
+                                <th colspan="4"></th>
+                                <th colspan="6" class="px-4 py-1.5 text-center text-xs text-slate-400 font-normal border-x border-slate-200">COMET per language</th>
+                                <th colspan="3" class="px-4 py-1.5 text-center text-xs text-slate-400 font-normal pr-6">Surface metrics</th>
+                            </tr>
+                        </thead>
+                        <tbody id="openqa-textual-body" class="divide-y divide-slate-100 bg-white"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
     </div>
 </section>
 
 <script>
 (function () {
+    var medalColors = { 1: '#d97706', 2: '#64748b', 3: '#b45309' };
+    var medalBg     = { 1: '#fef3c7', 2: '#f1f5f9', 3: '#fde8c8' };
+
+    function fmt4(v) { return v.toFixed(4); }
+    function fmt(v)  { return v.toFixed(4); }
+
+    function rankBadge(rank) {
+        return rank <= 3
+            ? '<span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:' + medalBg[rank] + ';color:' + medalColors[rank] + ';font-size:11px;font-weight:600">' + rank + '</span>'
+            : '<span style="font-size:12px;color:#94a3b8;font-weight:500">' + rank + '</span>';
+    }
+
+    function bar(val, max) {
+        var w = ((val / max) * 100).toFixed(1);
+        return '<div style="height:4px;background:#e2e8f0;border-radius:2px;overflow:hidden"><div style="height:100%;width:' + w + '%;background:#3b82f6;border-radius:2px"></div></div>';
+    }
+
+    /* ── Table 1: Visual MCQ ── */
     var visualMCQ = [
-        { rank: 1, name: "spirosbax",       overall: 0.8406, en: 0.8560, bg: 0.8909, zh: 0.7807, hr: 0.8772, it: 0.9074, sr: 0.8704 },
-        { rank: 2, name: "DS@GT",           overall: 0.7986, en: 0.8520, bg: 0.8636, zh: 0.6725, hr: 0.8596, it: 0.8704, sr: 0.8333 },
-        { rank: 3, name: "mohamedbasem",    overall: 0.7108, en: 0.7480, bg: 0.6909, zh: 0.6345, hr: 0.7368, it: 0.8148, sr: 0.7593 },
-        { rank: 4, name: "zhaijinghe",      overall: 0.6150, en: 0.6760, bg: 0.6182, zh: 0.5351, hr: 0.6140, it: 0.5926, sr: 0.5741 },
-        { rank: 5, name: "sjaini",          overall: 0.5927, en: 0.6920, bg: 0.5091, zh: 0.4415, hr: 0.5965, it: 0.7222, sr: 0.6667 },
-        { rank: 6, name: "begyed",          overall: 0.5774, en: 0.6000, bg: 0.6636, zh: 0.4708, hr: 0.6667, it: 0.7037, sr: 0.6481 },
-        { rank: 7, name: "linxiaocan",      overall: 0.5560, en: 0.6040, bg: 0.5455, zh: 0.5117, hr: 0.5088, it: 0.5926, sr: 0.4259 },
-        { rank: 8, name: "pratikpriyanshu", overall: 0.5076, en: 0.5720, bg: 0.4364, zh: 0.4181, hr: 0.5614, it: 0.5556, sr: 0.5185 },
-        { rank: 9, name: "wether",          overall: 0.4673, en: 0.5460, bg: 0.5636, zh: 0.3187, hr: 0.4561, it: 0.4815, sr: 0.4815 },
+        { rank:1, name:"spirosbax",       overall:0.8406, en:0.8560, bg:0.8909, zh:0.7807, hr:0.8772, it:0.9074, sr:0.8704 },
+        { rank:2, name:"DS@GT",           overall:0.7986, en:0.8520, bg:0.8636, zh:0.6725, hr:0.8596, it:0.8704, sr:0.8333 },
+        { rank:3, name:"mohamedbasem",    overall:0.7108, en:0.7480, bg:0.6909, zh:0.6345, hr:0.7368, it:0.8148, sr:0.7593 },
+        { rank:4, name:"zhaijinghe",      overall:0.6150, en:0.6760, bg:0.6182, zh:0.5351, hr:0.6140, it:0.5926, sr:0.5741 },
+        { rank:5, name:"sjaini",          overall:0.5927, en:0.6920, bg:0.5091, zh:0.4415, hr:0.5965, it:0.7222, sr:0.6667 },
+        { rank:6, name:"begyed",          overall:0.5774, en:0.6000, bg:0.6636, zh:0.4708, hr:0.6667, it:0.7037, sr:0.6481 },
+        { rank:7, name:"linxiaocan",      overall:0.5560, en:0.6040, bg:0.5455, zh:0.5117, hr:0.5088, it:0.5926, sr:0.4259 },
+        { rank:8, name:"pratikpriyanshu", overall:0.5076, en:0.5720, bg:0.4364, zh:0.4181, hr:0.5614, it:0.5556, sr:0.5185 },
+        { rank:9, name:"wether",          overall:0.4673, en:0.5460, bg:0.5636, zh:0.3187, hr:0.4561, it:0.4815, sr:0.4815 },
     ];
 
-    var medalColors  = { 1: '#d97706', 2: '#64748b', 3: '#b45309' };
-    var medalBg      = { 1: '#fef3c7', 2: '#f1f5f9', 3: '#fde8c8' };
-    var maxOverall   = Math.max.apply(null, visualMCQ.map(function(d){ return d.overall; }));
-
-    function fmt(v) { return v.toFixed(4); }
-
-    function renderTable(data, tbodyId) {
-        var tbody = document.getElementById(tbodyId);
+    (function() {
+        var tbody = document.getElementById('mcq-visual-body');
         if (!tbody) return;
-        data.forEach(function(row) {
-            var barW = ((row.overall / maxOverall) * 100).toFixed(1);
-            var rankHtml = row.rank <= 3
-                ? '<span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:' + medalBg[row.rank] + ';color:' + medalColors[row.rank] + ';font-size:11px;font-weight:600">' + row.rank + '</span>'
-                : '<span style="font-size:12px;color:#94a3b8;font-weight:500">' + row.rank + '</span>';
+        var max = Math.max.apply(null, visualMCQ.map(function(d){ return d.overall; }));
+        visualMCQ.forEach(function(row) {
             var tr = document.createElement('tr');
             tr.className = 'hover:bg-slate-50 transition-colors';
             tr.innerHTML =
-                '<td class="px-6 py-3">' + rankHtml + '</td>' +
-                '<td class="px-6 py-3 font-medium text-slate-900">' + row.name + '</td>' +
-                '<td class="px-6 py-3 text-right font-medium text-slate-900 tabular-nums">' + fmt(row.overall) + '</td>' +
-                '<td class="px-4 py-3"><div style="height:4px;background:#e2e8f0;border-radius:2px;overflow:hidden"><div style="height:100%;width:' + barW + '%;background:#3b82f6;border-radius:2px"></div></div></td>' +
-                '<td class="px-4 py-3 text-right text-slate-600 tabular-nums">' + fmt(row.en) + '</td>' +
-                '<td class="px-4 py-3 text-right text-slate-600 tabular-nums">' + fmt(row.bg) + '</td>' +
-                '<td class="px-4 py-3 text-right text-slate-600 tabular-nums">' + fmt(row.zh) + '</td>' +
-                '<td class="px-4 py-3 text-right text-slate-600 tabular-nums">' + fmt(row.hr) + '</td>' +
-                '<td class="px-4 py-3 text-right text-slate-600 tabular-nums">' + fmt(row.it) + '</td>' +
-                '<td class="px-4 py-3 pr-6 text-right text-slate-600 tabular-nums">' + fmt(row.sr) + '</td>';
+                '<td class="px-6 py-3">'                                                          + rankBadge(row.rank) + '</td>' +
+                '<td class="px-6 py-3 font-medium text-slate-900">'                               + row.name           + '</td>' +
+                '<td class="px-6 py-3 text-right font-medium text-slate-900 tabular-nums">'       + fmt(row.overall)   + '</td>' +
+                '<td class="px-4 py-3">'                                                          + bar(row.overall, max) + '</td>' +
+                '<td class="px-4 py-3 text-right text-slate-600 tabular-nums">'                   + fmt(row.en)        + '</td>' +
+                '<td class="px-4 py-3 text-right text-slate-600 tabular-nums">'                   + fmt(row.bg)        + '</td>' +
+                '<td class="px-4 py-3 text-right text-slate-600 tabular-nums">'                   + fmt(row.zh)        + '</td>' +
+                '<td class="px-4 py-3 text-right text-slate-600 tabular-nums">'                   + fmt(row.hr)        + '</td>' +
+                '<td class="px-4 py-3 text-right text-slate-600 tabular-nums">'                   + fmt(row.it)        + '</td>' +
+                '<td class="px-4 py-3 pr-6 text-right text-slate-600 tabular-nums">'              + fmt(row.sr)        + '</td>';
             tbody.appendChild(tr);
         });
-    }
+    })();
 
-    renderTable(visualMCQ, 'mcq-visual-body');
+    /* ── Table 2: Textual MCQ ── */
+    var textualMCQ = [
+        { rank:1, name:"pratikpriyanshu", overall:0.7538, en:0.8375, bg:0.6763, zh:0.6479, hr:0.8030, it:0.8497 },
+        { rank:2, name:"linxiaocan",      overall:0.7084, en:0.7917, bg:0.6098, zh:0.6891, hr:0.7552, it:0.7630 },
+        { rank:3, name:"rafiulbiswas",    overall:0.6152, en:0.7125, bg:0.4346, zh:0.6629, hr:0.6836, it:0.7341 },
+    ];
+
+    (function() {
+        var tbody = document.getElementById('mcq-textual-body');
+        if (!tbody) return;
+        var max = Math.max.apply(null, textualMCQ.map(function(d){ return d.overall; }));
+        textualMCQ.forEach(function(row) {
+            var tr = document.createElement('tr');
+            tr.className = 'hover:bg-slate-50 transition-colors';
+            tr.innerHTML =
+                '<td class="px-6 py-3">'                                                          + rankBadge(row.rank) + '</td>' +
+                '<td class="px-6 py-3 font-medium text-slate-900">'                               + row.name           + '</td>' +
+                '<td class="px-6 py-3 text-right font-medium text-slate-900 tabular-nums">'       + fmt(row.overall)   + '</td>' +
+                '<td class="px-4 py-3">'                                                          + bar(row.overall, max) + '</td>' +
+                '<td class="px-4 py-3 text-right text-slate-600 tabular-nums">'                   + fmt(row.en)        + '</td>' +
+                '<td class="px-4 py-3 text-right text-slate-600 tabular-nums">'                   + fmt(row.bg)        + '</td>' +
+                '<td class="px-4 py-3 text-right text-slate-600 tabular-nums">'                   + fmt(row.zh)        + '</td>' +
+                '<td class="px-4 py-3 text-right text-slate-600 tabular-nums">'                   + fmt(row.hr)        + '</td>' +
+                '<td class="px-4 py-3 pr-6 text-right text-slate-600 tabular-nums">'              + fmt(row.it)        + '</td>';
+            tbody.appendChild(tr);
+        });
+    })();
+
+    /* ── Table 3: Visual OpenQA ── */
+    /* Sorted by comet_overall descending (as given). Bar tracks comet_overall. */
+    var visualOpenQA = [
+        { rank:1, name:"mohamedbasem",   comet:0.6488, bleu:0.1391, rouge:0.2762, meteor:0.2383, bg:0.6493, zh:0.7287, hr:0.6588, en:0.6499, it:0.6132, sr:0.5838 },
+        { rank:2, name:"wangshou66",     comet:0.6366, bleu:0.1308, rouge:0.2717, meteor:0.2388, bg:0.6156, zh:0.7012, hr:0.6597, en:0.6519, it:0.5920, sr:0.5929 },
+        { rank:3, name:"uned-martinez",  comet:0.5938, bleu:0.0980, rouge:0.2452, meteor:0.1842, bg:0.5721, zh:0.5985, hr:0.6390, en:0.5942, it:0.5767, sr:0.5804 },
+        { rank:4, name:"liuzhe3085",     comet:0.5829, bleu:0.1556, rouge:0.3351, meteor:0.2295, bg:0.4947, zh:0.6705, hr:0.6612, en:0.6180, it:0.5317, sr:0.5110 },
+        { rank:5, name:"wenlong",        comet:0.5497, bleu:0.0680, rouge:0.1713, meteor:0.1185, bg:0.5407, zh:0.5758, hr:0.5854, en:0.5311, it:0.5175, sr:0.5470 },
+        { rank:6, name:"rafiulbiswas",   comet:0.5143, bleu:0.0735, rouge:0.2013, meteor:0.1331, bg:0.4798, zh:0.4848, hr:0.6167, en:0.4851, it:0.5031, sr:0.5167 },
+        { rank:7, name:"linxiaocan",     comet:0.5117, bleu:0.0541, rouge:0.1434, meteor:0.0936, bg:0.4666, zh:0.5150, hr:0.5780, en:0.5038, it:0.5053, sr:0.4998 },
+        { rank:8, name:"pratikpriyanshu",comet:0.4286, bleu:0.0375, rouge:0.0993, meteor:0.0712, bg:0.4007, zh:0.3688, hr:0.4661, en:0.4626, it:0.4484, sr:0.4248 },
+    ];
+
+    (function() {
+        var tbody = document.getElementById('openqa-visual-body');
+        if (!tbody) return;
+        var max = Math.max.apply(null, visualOpenQA.map(function(d){ return d.comet; }));
+        visualOpenQA.forEach(function(row) {
+            var tr = document.createElement('tr');
+            tr.className = 'hover:bg-slate-50 transition-colors';
+            tr.innerHTML =
+                '<td class="px-6 py-3">'                                                          + rankBadge(row.rank) + '</td>' +
+                '<td class="px-6 py-3 font-medium text-slate-900">'                               + row.name           + '</td>' +
+                '<td class="px-5 py-3 text-right font-medium text-slate-900 tabular-nums">'       + fmt(row.comet)     + '</td>' +
+                '<td class="px-3 py-3">'                                                          + bar(row.comet, max) + '</td>' +
+                '<td class="px-4 py-3 text-right text-slate-500 tabular-nums text-xs">'           + fmt(row.bg)        + '</td>' +
+                '<td class="px-4 py-3 text-right text-slate-500 tabular-nums text-xs">'           + fmt(row.zh)        + '</td>' +
+                '<td class="px-4 py-3 text-right text-slate-500 tabular-nums text-xs">'           + fmt(row.hr)        + '</td>' +
+                '<td class="px-4 py-3 text-right text-slate-500 tabular-nums text-xs">'           + fmt(row.en)        + '</td>' +
+                '<td class="px-4 py-3 text-right text-slate-500 tabular-nums text-xs">'           + fmt(row.it)        + '</td>' +
+                '<td class="px-4 py-3 text-right text-slate-500 tabular-nums text-xs">'           + fmt(row.sr)        + '</td>' +
+                '<td class="px-4 py-3 text-right text-slate-600 tabular-nums">'                   + fmt(row.bleu)      + '</td>' +
+                '<td class="px-4 py-3 text-right text-slate-600 tabular-nums">'                   + fmt(row.rouge)     + '</td>' +
+                '<td class="px-4 py-3 pr-6 text-right text-slate-600 tabular-nums">'              + fmt(row.meteor)    + '</td>';
+            tbody.appendChild(tr);
+        });
+    })();
+
+    /* ── Table 4: Textual OpenQA ── */
+    var textualOpenQA = [
+        { rank:1, name:"linxiaocan",      comet:0.6563, bg:0.5634, en:0.6723, zh:0.7539, hr:0.6559, it:0.6703, sr:0.6557, bleu:0.1871, rouge:0.3032, meteor:0.2139 },
+        { rank:2, name:"pratikpriyanshu", comet:0.5285, bg:0.4309, en:0.5088, zh:0.4969, hr:0.5553, it:0.6097, sr:0.5584, bleu:0.1142, rouge:0.2300, meteor:0.1591 },
+    ];
+
+    (function() {
+        var tbody = document.getElementById('openqa-textual-body');
+        if (!tbody) return;
+        if (textualOpenQA.length === 0) {
+            var tr = document.createElement('tr');
+            tr.innerHTML = '<td colspan="13" class="px-6 py-8 text-center text-slate-400 text-sm">Results coming soon</td>';
+            tbody.appendChild(tr);
+            return;
+        }
+        var max = Math.max.apply(null, textualOpenQA.map(function(d){ return d.comet; }));
+        textualOpenQA.forEach(function(row) {
+            var tr = document.createElement('tr');
+            tr.className = 'hover:bg-slate-50 transition-colors';
+            tr.innerHTML =
+                '<td class="px-6 py-3">'                                                          + rankBadge(row.rank) + '</td>' +
+                '<td class="px-6 py-3 font-medium text-slate-900">'                               + row.name           + '</td>' +
+                '<td class="px-5 py-3 text-right font-medium text-slate-900 tabular-nums">'       + fmt(row.comet)     + '</td>' +
+                '<td class="px-3 py-3">'                                                          + bar(row.comet, max) + '</td>' +
+                '<td class="px-4 py-3 text-right text-slate-500 tabular-nums text-xs">'           + fmt(row.bg)        + '</td>' +
+                '<td class="px-4 py-3 text-right text-slate-500 tabular-nums text-xs">'           + fmt(row.zh)        + '</td>' +
+                '<td class="px-4 py-3 text-right text-slate-500 tabular-nums text-xs">'           + fmt(row.hr)        + '</td>' +
+                '<td class="px-4 py-3 text-right text-slate-500 tabular-nums text-xs">'           + fmt(row.en)        + '</td>' +
+                '<td class="px-4 py-3 text-right text-slate-500 tabular-nums text-xs">'           + fmt(row.it)        + '</td>' +
+                '<td class="px-4 py-3 text-right text-slate-500 tabular-nums text-xs">'           + fmt(row.sr)        + '</td>' +
+                '<td class="px-4 py-3 text-right text-slate-600 tabular-nums">'                   + fmt(row.bleu)      + '</td>' +
+                '<td class="px-4 py-3 text-right text-slate-600 tabular-nums">'                   + fmt(row.rouge)     + '</td>' +
+                '<td class="px-4 py-3 pr-6 text-right text-slate-600 tabular-nums">'              + fmt(row.meteor)    + '</td>';
+            tbody.appendChild(tr);
+        });
+    })();
+
 })();
 </script>
 
