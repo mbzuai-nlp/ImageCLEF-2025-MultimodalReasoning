@@ -562,7 +562,8 @@
                                 <th class="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">BG</th>
                                 <th class="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">ZH</th>
                                 <th class="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">HR</th>
-                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider pr-6">IT</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">IT</th>
+                                <th class="px-4 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider pr-6">SR</th>
                             </tr>
                         </thead>
                         <tbody id="mcq-textual-body" class="divide-y divide-slate-100 bg-white"></tbody>
@@ -700,9 +701,9 @@
 
     /* ── Table 2: Textual MCQ ── */
     var textualMCQ = [
-        { rank:1, name:"pratikpriyanshu", overall:0.7538, en:0.8375, bg:0.6763, zh:0.6479, hr:0.8030, it:0.8497 },
-        { rank:2, name:"linxiaocan",      overall:0.7084, en:0.7917, bg:0.6098, zh:0.6891, hr:0.7552, it:0.7630 },
-        { rank:3, name:"rafiulbiswas",    overall:0.6152, en:0.7125, bg:0.4346, zh:0.6629, hr:0.6836, it:0.7341 },
+        { rank:1, name:"pratikpriyanshu", overall:0.7538, en:0.8375, bg:0.6763, zh:0.6479, hr:0.8030, it:0.8497, sr: 0.8075},
+        { rank:2, name:"linxiaocan",      overall:0.7084, en:0.7917, bg:0.6098, zh:0.6891, hr:0.7552, it:0.7630, sr: 0.7326},
+        { rank:3, name:"rafiulbiswas",    overall:0.6152, en:0.7125, bg:0.4346, zh:0.6629, hr:0.6836, it:0.7341, sr: 0.6257},
     ];
 
     (function() {
@@ -721,7 +722,8 @@
                 '<td class="px-4 py-3 text-right text-slate-600 tabular-nums">'                   + fmt(row.bg)        + '</td>' +
                 '<td class="px-4 py-3 text-right text-slate-600 tabular-nums">'                   + fmt(row.zh)        + '</td>' +
                 '<td class="px-4 py-3 text-right text-slate-600 tabular-nums">'                   + fmt(row.hr)        + '</td>' +
-                '<td class="px-4 py-3 pr-6 text-right text-slate-600 tabular-nums">'              + fmt(row.it)        + '</td>';
+                '<td class="px-4 py-3 text-right text-slate-600 tabular-nums">'                   + fmt(row.it)        + '</td>' +
+                '<td class="px-4 py-3 pr-6 text-right text-slate-600 tabular-nums">'              + fmt(row.sr)        + '</td>';
             tbody.appendChild(tr);
         });
     })();
